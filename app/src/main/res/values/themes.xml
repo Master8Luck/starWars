@@ -1,0 +1,15 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.StarWars" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="android:colorPrimary">@color/purple_500</item>
+        <item name="android:colorPrimaryDark">@color/purple_700</item>
+        <item name="android:colorAccent">@color/teal_200</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="Theme.SplashTheme" parent="android:Theme.Holo.NoActionBar">
+        <item name="android:windowBackground">@drawable/star_wars_logo</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+</resources>
