@@ -5,40 +5,45 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class Film {
+    @SerializedName("id")
+    private int id;
     @SerializedName("title")
     private String title;
-    @SerializedName("episode_id")
-    private int episodeId;
-    @SerializedName("opening_crawl")
-    private String openingCrawl;
-    @SerializedName("release_date")
-    private String releaseDate;
+    @SerializedName("vote_average")
+    private double voteAverage;
+    @SerializedName("genre_ids")
+    private int[] genres;
+    @SerializedName("poster_path")
+    private String posterPath;
 
-    public Film(String title, int episode_id, String opening_crawl, String release_date) {
-        this.title = title;
-        this.episodeId = episode_id;
-        this.openingCrawl = opening_crawl;
-        this.releaseDate = release_date;
+    public int getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public double getVoteAverage() {
+        return voteAverage;
+    }
+
+    public int[] getGenres() {
+        return genres;
+    }
+
+    public String getPosterPath() {
+        return posterPath;
     }
 
     public Film() {
     }
 
-    public String getFullTitle() {
-        return title + " " + episodeId;
-    }
-
-    public String getOpeningCrawl() {
-        return openingCrawl.length() > 10 ? openingCrawl.substring(0, 10) : openingCrawl;
-    }
-
-    @Override
-    public String toString() {
-        return "Film{" +
-                "title='" + title + '\'' +
-                ", episode_id=" + episodeId +
-                ", opening_crawl='" + openingCrawl + '\'' +
-                ", release_date='" + releaseDate + '\'' +
-                '}';
+    public Film(int id, String title, double voteAverage, int[] genres, String posterPath) {
+        this.id = id;
+        this.title = title;
+        this.voteAverage = voteAverage;
+        this.genres = genres;
+        this.posterPath = posterPath;
     }
 }

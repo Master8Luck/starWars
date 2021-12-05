@@ -5,6 +5,8 @@
         <item name="android:colorPrimary">@color/purple_500</item>
         <item name="android:colorPrimaryDark">@color/purple_700</item>
         <item name="android:colorAccent">@color/teal_200</item>
+        <item name="android:background">#1E1636</item>
+        <item name="android:textColor">@color/white</item>
         <!-- Customize your theme here. -->
     </style>
 

@@ -1,6 +1,7 @@
 package com.example.starwars;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,18 +14,28 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.starwars.model.Film;
+import com.example.starwars.retrofit.ImageAPI;
+import com.example.starwars.retrofit.RetrofitImageClient;
 
 import java.util.List;
+
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FilmsAdapter extends RecyclerView.Adapter<FilmsAdapter.ViewHolder> {
     private List<Film> films;
     private LayoutInflater inflater;
     private FilmClickListener filmClickListener;
+    private ImageAPI imageAPI;
 
     public FilmsAdapter(List<Film> films, Context context, FilmClickListener filmClickListener) {
         this.films = films;
         this.inflater = LayoutInflater.from(context);
         this.filmClickListener = filmClickListener;
+        imageAPI = RetrofitImageClient.getInstance().create(ImageAPI.class);
     }
 
     @NonNull
@@ -38,9 +49,21 @@ public class FilmsAdapter extends RecyclerView.Adapter<FilmsAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Film film = films.get(position);
-        holder.FilmTitleTextView.setText(film.getFullTitle());
-        holder.FilmInfoTextView.setText(film.getOpeningCrawl());
-        holder.FilmIconImageView.setImageResource(R.drawable.ic_launcher_background);
+        holder.FilmTitleTextView.setText(film.getTitle());
+        holder.FilmInfoTextView.setText("Average vote: " + film.getVoteAverage());
+        imageAPI.getImage(film.getPosterPath())
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        holder.FilmIconImageView.setImageBitmap(BitmapFactory.decodeStream(response.body().byteStream()));
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        holder.FilmIconImageView.setImageResource(R.drawable.ic_launcher_background);
+                    }
+                });
+
     }
 
     @Override

@@ -1,12 +1,15 @@
 package com.example.starwars;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,20 +30,20 @@ import retrofit2.Retrofit;
 public class MainActivity extends Activity implements FilmsAdapter.FilmClickListener{
 
     public static final String FILMS_TAG = "films";
+    public static final String API_KEY = "430dc4bcb90f3bd8e2616b75a712749c";
     public static final String TAG = "asd";
+    int maxPage = 1;
+    int page = 1;
     StarAPI starAPI;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     FilmsAdapter adapter;
     RecyclerView recyclerView;
+    ProgressBar loadingProgressBar;
+    TextView errorTextView;
     List<Film> filmList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        try {
-            Thread.sleep(2500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         setTheme(R.style.Theme_StarWars);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -49,32 +52,72 @@ public class MainActivity extends Activity implements FilmsAdapter.FilmClickList
         starAPI = retrofit.create(StarAPI.class);
 
         recyclerView = findViewById(R.id.rv_films);
-        filmList.add(new Film("qwe", 2, "qwes", "gger"));
+        errorTextView = findViewById(R.id.tv_error_message);
+        loadingProgressBar = findViewById(R.id.pb_loading_indicator);
         adapter = new FilmsAdapter(filmList, this, this);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(adapter);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (filmList.size() == 0)
+                    fetchData();
+            }
+        });
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!recyclerView.canScrollVertically(1)) {
+                    if (page < maxPage) {
+                        page++;
+                        fetchData();
+                    }
+                }
+            }
+        });
 
 
         fetchData();
     }
 
     private void fetchData() {
-        compositeDisposable.add(starAPI.getFilms()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Consumer<Films>() {
-            @Override
-            public void accept(Films films) throws Throwable {
-                Log.d(TAG, "accept: " + films.getFilms().get(0).toString());
-                displayData(films);
-            }
-        }));
+        showLoadingIndicator();
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected()) {
+            compositeDisposable.add(starAPI.getBaseFilms(API_KEY, page)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Films>() {
+                        @Override
+                        public void accept(Films films) throws Throwable {
+                            displayData(films);
+                            maxPage = films.getPages();
+                        }
+                    }));
+        } else {
+            showErrorMessage();
+        }
     }
 
     private void displayData(Films films) {
-        filmList.clear();
+        errorTextView.setVisibility(View.INVISIBLE);
+        loadingProgressBar.setVisibility(View.INVISIBLE);
         filmList.addAll(films.getFilms());
         adapter.notifyDataSetChanged();
+    }
+
+    private void showErrorMessage(){
+        errorTextView.setVisibility(View.VISIBLE);
+        loadingProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+    private void showLoadingIndicator(){
+        errorTextView.setVisibility(View.INVISIBLE);
+        loadingProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -86,7 +129,7 @@ public class MainActivity extends Activity implements FilmsAdapter.FilmClickList
     @Override
     public void onItemClick(int position) {
         Intent filmActivityIntent = new Intent(this, FilmActivity.class);
-        filmActivityIntent.putExtra(FILMS_TAG, filmList.get(position).getFullTitle());
+        filmActivityIntent.putExtra(FILMS_TAG, "Film Id: " + filmList.get(position).getId());
         startActivity(filmActivityIntent);
     }
 }

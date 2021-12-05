@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">StarWars</string>
+    <string name="error_message">Failed to load films. Please check your internet connection and try again</string>
 </resources>
