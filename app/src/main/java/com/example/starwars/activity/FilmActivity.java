@@ -1,12 +1,10 @@
-package com.example.starwars;
+package com.example.starwars.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.example.starwars.model.Film;
-
-import java.util.List;
+import com.example.starwars.R;
 
 public class FilmActivity extends Activity {
 
@@ -20,7 +18,7 @@ public class FilmActivity extends Activity {
 
         filmNameTextView = findViewById(R.id.film_name);
 
-        filmNameTextView.setText(getIntent().getStringExtra(MainActivity.FILMS_TAG));
+        filmNameTextView.setText(getIntent().getStringExtra(FilmListActivity.FILMS_TAG));
     }
 
     @Override

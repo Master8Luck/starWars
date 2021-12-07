@@ -13,10 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StarWars">
         <activity
-            android:name=".FilmActivity"
+            android:name=".activity.FilmActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.FilmListActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
