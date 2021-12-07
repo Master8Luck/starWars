@@ -27,13 +27,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FilmsAdapter extends RecyclerView.Adapter<FilmsAdapter.ViewHolder> {
-    private List<Film> films;
+    private ArrayList<Film> mFilms;
     private LayoutInflater inflater;
     private FilmClickListener filmClickListener;
     private ImageAPI imageAPI;
 
-    public FilmsAdapter(List<Film> films, Context context, FilmClickListener filmClickListener) {
-        this.films = films;
+    public FilmsAdapter(ArrayList<Film> films, Context context, FilmClickListener filmClickListener) {
+        this.mFilms = films;
         this.inflater = LayoutInflater.from(context);
         this.filmClickListener = filmClickListener;
         imageAPI = RetrofitImageClient.getInstance().create(ImageAPI.class);
@@ -49,7 +49,7 @@ public class FilmsAdapter extends RecyclerView.Adapter<FilmsAdapter.ViewHolder> 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Film film = films.get(position);
+        Film film = mFilms.get(position);
         holder.FilmTitleTextView.setText(film.getTitle());
         holder.FilmInfoTextView.setText("Average vote: " + film.getVoteAverage());
         imageAPI.getImage(film.getPosterPath())
@@ -69,7 +69,7 @@ public class FilmsAdapter extends RecyclerView.Adapter<FilmsAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return films.size();
+        return mFilms.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -95,8 +95,8 @@ public class FilmsAdapter extends RecyclerView.Adapter<FilmsAdapter.ViewHolder> 
         void onItemClick(int position);
     }
 
-    public void setFilms(List<Film> filmList) {
-        films.addAll(filmList);
+    public void setFilms(ArrayList<Film> filmList) {
+        mFilms = filmList;
         notifyDataSetChanged();
     }
 }

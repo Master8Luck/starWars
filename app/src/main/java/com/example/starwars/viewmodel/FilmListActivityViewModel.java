@@ -27,6 +27,7 @@ public class FilmListActivityViewModel extends ViewModel {
         return mIndicator;
     }
     public void loadData() {
-        mFilms = mRepository.getData();
+        mFilms = mRepository.getDataFromAPI();
     }
+
 }

@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,31 +18,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.starwars.adapter.FilmsAdapter;
 import com.example.starwars.R;
 import com.example.starwars.model.Film;
-import com.example.starwars.model.Films;
-import com.example.starwars.retrofit.RetrofitClient;
-import com.example.starwars.retrofit.StarAPI;
 import com.example.starwars.viewmodel.FilmListActivityViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.functions.Consumer;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-import retrofit2.Retrofit;
-
 public class FilmListActivity extends AppCompatActivity implements FilmsAdapter.FilmClickListener {
 
     public static final String FILMS_TAG = "films";
     public static final String TAG = "asd";
-    public static final String ERROR_MESSAGE = "Failed to get results. Please try again later";
+    public static final String ERROR_MESSAGE = "No result in cache. Please connect to the internet";
+    public static final String CACHE_MESSAGE = "No internet connection. Showing cache";
 
     FilmListActivityViewModel mViewModel;
     FilmsAdapter mAdapter;
     RecyclerView recyclerView;
     ProgressBar loadingProgressBar;
-    List<Film> filmList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +45,12 @@ public class FilmListActivity extends AppCompatActivity implements FilmsAdapter.
         mViewModel.getFilms().observe(this, new Observer<List<Film>>() {
             @Override
             public void onChanged(List<Film> films) {
-                if (films == null) {
+                if (films == null || films.isEmpty()) {
                     showErrorMessage();
-                } else {
-                    mAdapter.setFilms(films);
+                } else if (!isInternetConnected()) {
+                    showCacheMessage();
                 }
+                mAdapter.setFilms((ArrayList<Film>) films);
             }
         });
 
@@ -91,11 +81,20 @@ public class FilmListActivity extends AppCompatActivity implements FilmsAdapter.
             }
         });
 
+
     }
 
     private void showErrorMessage(){
-        loadingProgressBar.setVisibility(View.INVISIBLE);
         Toast.makeText(this, ERROR_MESSAGE, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showCacheMessage(){
+        Toast.makeText(this, CACHE_MESSAGE, Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean isInternetConnected(){
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 
 
