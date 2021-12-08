@@ -1,7 +1,6 @@
 package com.example.starwars.adapter;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,36 +12,31 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.starwars.R;
+import com.example.starwars.StarWarsApp;
 import com.example.starwars.model.Film;
-import com.example.starwars.retrofit.ImageAPI;
-import com.example.starwars.retrofit.RetrofitImageClient;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class FilmsAdapter extends RecyclerView.Adapter<FilmsAdapter.ViewHolder> {
+
+    private static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w342/";
+
     private ArrayList<Film> mFilms;
     private LayoutInflater inflater;
     private FilmClickListener filmClickListener;
-    private ImageAPI imageAPI;
 
     public FilmsAdapter(ArrayList<Film> films, Context context, FilmClickListener filmClickListener) {
         this.mFilms = films;
         this.inflater = LayoutInflater.from(context);
         this.filmClickListener = filmClickListener;
-        imageAPI = RetrofitImageClient.getInstance().create(ImageAPI.class);
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.film_item, parent, false);
+        View view = inflater.inflate(R.layout.film_list_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -52,19 +46,10 @@ public class FilmsAdapter extends RecyclerView.Adapter<FilmsAdapter.ViewHolder> 
         Film film = mFilms.get(position);
         holder.FilmTitleTextView.setText(film.getTitle());
         holder.FilmInfoTextView.setText("Average vote: " + film.getVoteAverage());
-        imageAPI.getImage(film.getPosterPath())
-                .enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        holder.FilmIconImageView.setImageBitmap(BitmapFactory.decodeStream(response.body().byteStream()));
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        holder.FilmIconImageView.setImageResource(R.drawable.ic_launcher_background);
-                    }
-                });
-
+        Glide.with(StarWarsApp.getContext())
+                .load(IMAGE_BASE_URL + film.getPosterPath())
+                .error(R.drawable.ic_launcher_background)
+                .into(holder.FilmIconImageView);
     }
 
     @Override

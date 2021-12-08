@@ -1,14 +1,13 @@
 package com.example.starwars.repository;
 
-import android.os.AsyncTask;
-import android.os.Build;
+import static com.example.starwars.activity.FilmListActivity.TAG;
 
-import androidx.annotation.RequiresApi;
+import android.os.AsyncTask;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.room.Room;
 
-import com.example.starwars.database.FilmListDao;
 import com.example.starwars.database.StarWarsDatabase;
 import com.example.starwars.model.Film;
 import com.example.starwars.model.Films;
@@ -20,7 +19,6 @@ import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Call;
@@ -35,8 +33,9 @@ public class FilmsRepository {
     private static FilmsRepository instance;
     private StarAPI mStarAPI;
     private StarWarsDatabase mDatabase;
-    private MutableLiveData<List<Film>> mLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<Film>> mFilmList = new MutableLiveData<>();
     private MutableLiveData<Boolean> mLoadingIndicator = new MutableLiveData<>();
+    private MutableLiveData<Film> mFilm = new MutableLiveData<>();
 
     int currentPage = 0;
     int maxPage = 1;
@@ -54,7 +53,7 @@ public class FilmsRepository {
         return instance;
     }
 
-    public MutableLiveData<List<Film>> getDataFromAPI() {
+    public MutableLiveData<List<Film>> getFilmListFromAPI() {
         if (currentPage < maxPage) {
             currentPage++;
             mLoadingIndicator.postValue(true);
@@ -63,23 +62,23 @@ public class FilmsRepository {
                         @Override
                         public void onResponse(Call<Films> call, Response<Films> response) {
                             insertFilms(response.body().getFilms());
-                            List<Film> currentFilms = mLiveData.getValue();
+                            List<Film> currentFilms = mFilmList.getValue();
                             if (currentFilms == null)
                                 currentFilms = new ArrayList<>();
                             currentFilms.addAll(response.body().getFilms());
                             mLoadingIndicator.postValue(false);
-                            mLiveData.postValue(currentFilms);
+                            mFilmList.postValue(currentFilms);
                             maxPage = response.body().getPages();
                         }
 
                         @Override
                         public void onFailure(Call<Films> call, Throwable t) {
                             currentPage = 0;
-                            getDataFromDatabase();
+                            getFilmListFromDatabase();
                         }
                     });
         }
-        return mLiveData;
+        return mFilmList;
     }
 
     private void insertFilms(List<Film> films) {
@@ -88,27 +87,27 @@ public class FilmsRepository {
             @Override
             protected Void doInBackground(List<Film>... film) {
                 for (int i = 0; i < film[0].size(); i++) {
-                    mDatabase.mFilmListDao().insert(film[0].get(i));
+                    mDatabase.mFilmsDao().insert(film[0].get(i));
                 }
                 return null;
             }
         }.execute(films);
     }
 
-    public void getDataFromDatabase() {
-        mDatabase.mFilmListDao().getFilms()
+    public void getFilmListFromDatabase() {
+        mDatabase.mFilmsDao().getFilms()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DisposableSingleObserver<List<Film>>() {
                     @Override
                     public void onSuccess(@NonNull List<Film> films) {
-                        mLiveData.postValue(films);
+                        mFilmList.postValue(films);
                         mLoadingIndicator.postValue(false);
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-                        mLiveData.postValue(null);
+                        mFilmList.postValue(null);
                         mLoadingIndicator.postValue(false);
                     }
                 });
@@ -116,5 +115,23 @@ public class FilmsRepository {
 
     public MutableLiveData<Boolean> getLoadingIndicator() {
         return mLoadingIndicator;
+    }
+
+    public LiveData<Film> getFilmFromAPI(int id) {
+        mStarAPI.getFilm(id, API_KEY)
+                .enqueue(new Callback<Film>() {
+                    @Override
+                    public void onResponse(Call<Film> call, Response<Film> response) {
+                        mFilm.postValue(response.body());
+                        Log.d(TAG, "onResponse: ");
+                    }
+
+                    @Override
+                    public void onFailure(Call<Film> call, Throwable t) {
+                        mFilm.postValue(null);
+                        Log.d(TAG, "onFailure: ");
+                    }
+                });
+        return mFilm;
     }
 }

@@ -15,7 +15,7 @@ import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao
-public interface FilmListDao {
+public interface FilmsDao {
 
     @Query("SELECT * FROM Film")
     Single<List<Film>> getFilms();

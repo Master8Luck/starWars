@@ -10,24 +10,24 @@ import java.util.List;
 
 public class FilmListActivityViewModel extends ViewModel {
 
-    private LiveData<List<Film>> mFilms;
     private FilmsRepository mRepository;
-    private LiveData<Boolean> mIndicator;
+    private LiveData<List<Film>> mFilmsLiveData;
+    private LiveData<Boolean> mIndicatorLiveData;
 
     public void init() {
         mRepository = FilmsRepository.getInstance();
-        mIndicator = mRepository.getLoadingIndicator();
+        mIndicatorLiveData = mRepository.getLoadingIndicator();
         loadData();
     }
 
-    public LiveData<List<Film>> getFilms() {
-        return mFilms;
+    public LiveData<List<Film>> getFilmsLiveData() {
+        return mFilmsLiveData;
     }
-    public LiveData<Boolean> getLoadingIndicator() {
-        return mIndicator;
+    public LiveData<Boolean> getIndicatorLiveData() {
+        return mIndicatorLiveData;
     }
     public void loadData() {
-        mFilms = mRepository.getDataFromAPI();
+        mFilmsLiveData = mRepository.getFilmListFromAPI();
     }
 
 }

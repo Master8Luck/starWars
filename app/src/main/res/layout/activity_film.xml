@@ -1,13 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/film_name"
+        android:id="@+id/film_icon"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_weight="1"
+        android:padding="4dp"
         />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/film_title"
+            android:layout_gravity="center_horizontal"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif"
+            android:padding="4dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/film_date"
+            android:layout_gravity="center_horizontal"
+            android:textSize="14sp"
+            android:fontFamily="serif"
+            android:padding="2dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/film_genres"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="serif"
+            android:textSize="14sp"
+            android:padding="2dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="Synopsis"
+            android:padding="2dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/film_overview"
+            android:layout_gravity="center_horizontal"
+            android:gravity="fill_horizontal"
+            android:fontFamily="sans-serif"
+            android:maxLines="4"
+            android:textSize="14sp"
+            android:padding="2dp"
+            />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+    </LinearLayout>
 
 </LinearLayout>

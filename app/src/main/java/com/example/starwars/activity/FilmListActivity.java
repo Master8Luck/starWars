@@ -25,24 +25,24 @@ import java.util.List;
 
 public class FilmListActivity extends AppCompatActivity implements FilmsAdapter.FilmClickListener {
 
-    public static final String FILMS_TAG = "films";
+    public static final String FILM_ID_EXTRA_KEY = "films";
     public static final String TAG = "asd";
     public static final String ERROR_MESSAGE = "No result in cache. Please connect to the internet";
     public static final String CACHE_MESSAGE = "No internet connection. Showing cache";
 
-    FilmListActivityViewModel mViewModel;
-    FilmsAdapter mAdapter;
-    RecyclerView recyclerView;
-    ProgressBar loadingProgressBar;
+    private FilmListActivityViewModel mViewModel;
+    private FilmsAdapter mAdapter;
+    private RecyclerView recyclerView;
+    private ProgressBar loadingProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_film_list);
 
         mViewModel = ViewModelProviders.of(this).get(FilmListActivityViewModel.class);
         mViewModel.init();
-        mViewModel.getFilms().observe(this, new Observer<List<Film>>() {
+        mViewModel.getFilmsLiveData().observe(this, new Observer<List<Film>>() {
             @Override
             public void onChanged(List<Film> films) {
                 if (films == null || films.isEmpty()) {
@@ -54,7 +54,7 @@ public class FilmListActivity extends AppCompatActivity implements FilmsAdapter.
             }
         });
 
-        mViewModel.getLoadingIndicator().observe(this, new Observer<Boolean>() {
+        mViewModel.getIndicatorLiveData().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
@@ -101,7 +101,7 @@ public class FilmListActivity extends AppCompatActivity implements FilmsAdapter.
     @Override
     public void onItemClick(int position) {
         Intent filmActivityIntent = new Intent(this, FilmActivity.class);
-        filmActivityIntent.putExtra(FILMS_TAG, "Film Id: " + mViewModel.getFilms().getValue().get(position).getId());
+        filmActivityIntent.putExtra(FILM_ID_EXTRA_KEY, mViewModel.getFilmsLiveData().getValue().get(position).getId());
         startActivity(filmActivityIntent);
     }
 }
