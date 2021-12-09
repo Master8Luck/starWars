@@ -94,6 +94,17 @@ public class FilmsRepository {
         }.execute(films);
     }
 
+    private void updateFilm(Film film) {
+        new AsyncTask<Film, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Film... films) {
+                mDatabase.mFilmsDao().update(film);
+                return null;
+            }
+        }.execute(film);
+    }
+
     public void getFilmListFromDatabase() {
         mDatabase.mFilmsDao().getFilms()
                 .subscribeOn(Schedulers.io())
@@ -113,25 +124,48 @@ public class FilmsRepository {
                 });
     }
 
+    public void getFilmFromDatabase(int id) {
+        mDatabase.mFilmsDao().getFilm(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisposableSingleObserver<Film>() {
+                    @Override
+                    public void onSuccess(@NonNull Film film) {
+                        mFilm.postValue(film);
+                        mLoadingIndicator.postValue(false);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        mFilm.postValue(null);
+                        mLoadingIndicator.postValue(false);
+                    }
+                });
+    }
+
     public MutableLiveData<Boolean> getLoadingIndicator() {
         return mLoadingIndicator;
     }
 
     public LiveData<Film> getFilmFromAPI(int id) {
+        mLoadingIndicator.postValue(true);
         mStarAPI.getFilm(id, API_KEY)
                 .enqueue(new Callback<Film>() {
                     @Override
                     public void onResponse(Call<Film> call, Response<Film> response) {
+                        updateFilm(response.body());
                         mFilm.postValue(response.body());
                         Log.d(TAG, "onResponse: ");
+                        mLoadingIndicator.postValue(false);
                     }
 
                     @Override
                     public void onFailure(Call<Film> call, Throwable t) {
-                        mFilm.postValue(null);
+                        getFilmFromDatabase(id);
                         Log.d(TAG, "onFailure: ");
                     }
                 });
         return mFilm;
     }
+
 }

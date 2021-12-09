@@ -6,7 +6,7 @@
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:id="@+id/film_icon"
         android:layout_gravity="center_horizontal|top"
         android:layout_weight="1"
@@ -15,9 +15,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="2">
 
         <TextView
             android:layout_width="wrap_content"
@@ -56,6 +56,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:text="Synopsis"
+            android:paddingTop="4dp"
             android:padding="2dp"
             />
         <TextView
@@ -69,10 +70,43 @@
             android:textSize="14sp"
             android:padding="2dp"
             />
-
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:textSize="16sp"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:text="Cast &amp; Crew"
+                android:padding="2dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:gravity="end"
+                android:id="@+id/film_to_full_crew"
+                android:textSize="16sp"
+                android:text="View all"
+                android:clickable="true"
+                android:textColor="#2196F3"
+                android:padding="2dp"
+                android:focusable="true" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/film_crew_rv"
             />
 
     </LinearLayout>

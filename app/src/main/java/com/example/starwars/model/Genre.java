@@ -10,6 +10,8 @@ public class Genre {
         return name;
     }
     public static String convertToString(Genre[] genres) {
+        if (genres == null)
+            return "";
         StringBuilder builder = new StringBuilder();
         for (Genre genre: genres) {
             builder.append(genre.getName()).append(", ");

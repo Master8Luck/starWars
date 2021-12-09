@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.example.starwars.model.Film;
 
@@ -20,6 +21,12 @@ public interface FilmsDao {
     @Query("SELECT * FROM Film")
     Single<List<Film>> getFilms();
 
+    @Query("SELECT * FROM Film WHERE id=:id")
+    Single<Film> getFilm(int id);
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Film film);
+
+    @Update
+    void update(Film film);
 }

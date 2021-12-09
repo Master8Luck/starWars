@@ -32,6 +32,9 @@ public class Film {
     @Nullable
     @SerializedName("release_date")
     private String releaseDate;
+    @Nullable
+    @SerializedName("production_companies")
+    private List<Crew> crews;
 
     public int getId() {
         return id;
@@ -89,4 +92,11 @@ public class Film {
         this.releaseDate = releaseDate;
     }
 
+    public List<Crew> getCrews() {
+        return crews;
+    }
+
+    public void setCrews(List<Crew> crews) {
+        this.crews = crews;
+    }
 }
