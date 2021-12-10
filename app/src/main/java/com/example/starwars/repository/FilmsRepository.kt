@@ -35,10 +35,10 @@ class FilmsRepository private constructor() {
                 mStarAPI.getBaseFilms(API_KEY, currentPage)
                     .enqueue(object : Callback<Films?> {
                         override fun onResponse(call: Call<Films?>, response: Response<Films?>) {
-                            insertFilms(response.body()!!.films)
+                            response.body()!!.films?.let { insertFilms(it) }
                             var currentFilms = mFilmList.value
                             if (currentFilms == null) currentFilms = ArrayList()
-                            currentFilms.addAll(response.body()!!.films)
+                            response.body()!!.films?.let { currentFilms.addAll(it) }
                             loadingIndicator.postValue(false)
                             mFilmList.postValue(currentFilms)
                             maxPage = response.body()!!.pages

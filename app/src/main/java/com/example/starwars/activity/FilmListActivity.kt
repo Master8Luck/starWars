@@ -36,7 +36,7 @@ class FilmListActivity : AppCompatActivity(), FilmClickListener {
             } else if (!isInternetConnected) {
                 showCacheMessage()
             }
-            mAdapter!!.setFilms(films as ArrayList<Film?>?)
+            mAdapter!!.setFilms(films as ArrayList<Film>)
         })
         mViewModel!!.indicatorLiveData!!.observe(this, { aBoolean ->
             if (aBoolean) {
