@@ -1,33 +1,25 @@
-package com.example.starwars.viewmodel;
+package com.example.starwars.viewmodel
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import com.example.starwars.model.Film
+import com.example.starwars.repository.FilmsRepository
+import com.example.starwars.repository.FilmsRepository.Companion.instance
 
-import com.example.starwars.model.Film;
-import com.example.starwars.repository.FilmsRepository;
+class FilmListActivityViewModel : ViewModel() {
+    private var mRepository: FilmsRepository? = null
+    var filmsLiveData: LiveData<MutableList<Film>?>? = null
+        private set
+    var indicatorLiveData: LiveData<Boolean>? = null
+        private set
 
-import java.util.List;
-
-public class FilmListActivityViewModel extends ViewModel {
-
-    private FilmsRepository mRepository;
-    private LiveData<List<Film>> mFilmsLiveData;
-    private LiveData<Boolean> mIndicatorLiveData;
-
-    public void init() {
-        mRepository = FilmsRepository.getInstance();
-        mIndicatorLiveData = mRepository.getLoadingIndicator();
-        loadData();
+    fun init() {
+        mRepository = instance
+        indicatorLiveData = mRepository!!.loadingIndicator
+        loadData()
     }
 
-    public LiveData<List<Film>> getFilmsLiveData() {
-        return mFilmsLiveData;
+    fun loadData() {
+        filmsLiveData = mRepository!!.filmListFromAPI
     }
-    public LiveData<Boolean> getIndicatorLiveData() {
-        return mIndicatorLiveData;
-    }
-    public void loadData() {
-        mFilmsLiveData = mRepository.getFilmListFromAPI();
-    }
-
 }

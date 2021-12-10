@@ -1,107 +1,92 @@
-package com.example.starwars.activity;
+package com.example.starwars.activity
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.content.Intent
+import android.net.ConnectivityManager
+import android.os.Bundle
+import android.view.View
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.starwars.R
+import com.example.starwars.activity.FilmActivity
+import com.example.starwars.adapter.FilmsAdapter
+import com.example.starwars.adapter.FilmsAdapter.FilmClickListener
+import com.example.starwars.model.Film
+import com.example.starwars.viewmodel.FilmListActivityViewModel
+import java.util.*
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.starwars.adapter.FilmsAdapter;
-import com.example.starwars.R;
-import com.example.starwars.model.Film;
-import com.example.starwars.viewmodel.FilmListActivityViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class FilmListActivity extends AppCompatActivity implements FilmsAdapter.FilmClickListener {
-
-    public static final String FILM_ID_EXTRA_KEY = "films";
-    public static final String TAG = "asd";
-    public static final String ERROR_MESSAGE = "No result in cache. Please connect to the internet";
-    public static final String CACHE_MESSAGE = "No internet connection. Showing cache";
-
-    private FilmListActivityViewModel mViewModel;
-    private FilmsAdapter mAdapter;
-    private RecyclerView recyclerView;
-    private ProgressBar loadingProgressBar;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_film_list);
-
-        mViewModel = ViewModelProviders.of(this).get(FilmListActivityViewModel.class);
-        mViewModel.init();
-        mViewModel.getFilmsLiveData().observe(this, new Observer<List<Film>>() {
-            @Override
-            public void onChanged(List<Film> films) {
-                if (films == null || films.isEmpty()) {
-                    showErrorMessage();
-                } else if (!isInternetConnected()) {
-                    showCacheMessage();
-                }
-                mAdapter.setFilms((ArrayList<Film>) films);
+class FilmListActivity : AppCompatActivity(), FilmClickListener {
+    private var mViewModel: FilmListActivityViewModel? = null
+    private var mAdapter: FilmsAdapter? = null
+    private lateinit var recyclerView: RecyclerView
+    private var loadingProgressBar: ProgressBar? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_film_list)
+        mViewModel = ViewModelProviders.of(this).get(
+            FilmListActivityViewModel::class.java
+        )
+        mViewModel!!.init()
+        mViewModel!!.filmsLiveData!!.observe(this, { films ->
+            if (films == null || films.isEmpty()) {
+                showErrorMessage()
+            } else if (!isInternetConnected) {
+                showCacheMessage()
             }
-        });
-
-        mViewModel.getIndicatorLiveData().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    loadingProgressBar.setVisibility(View.VISIBLE);
-                } else {
-                    loadingProgressBar.setVisibility(View.INVISIBLE);
-                }
+            mAdapter!!.setFilms(films as ArrayList<Film?>?)
+        })
+        mViewModel!!.indicatorLiveData!!.observe(this, { aBoolean ->
+            if (aBoolean) {
+                loadingProgressBar!!.visibility = View.VISIBLE
+            } else {
+                loadingProgressBar!!.visibility = View.INVISIBLE
             }
-        });
-
-        recyclerView = findViewById(R.id.rv_films);
-        loadingProgressBar = findViewById(R.id.pb_loading_indicator);
-        mAdapter = new FilmsAdapter(new ArrayList<>(), this, this);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        recyclerView.setAdapter(mAdapter);
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
+        })
+        recyclerView = findViewById(R.id.rv_films)
+        loadingProgressBar = findViewById(R.id.pb_loading_indicator)
+        mAdapter = FilmsAdapter(ArrayList(), this, this)
+        recyclerView.layoutManager = GridLayoutManager(this, 2)
+        recyclerView.adapter = mAdapter
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
                 if (!recyclerView.canScrollVertically(1)) {
-                    mViewModel.loadData();
+                    mViewModel!!.loadData()
                 }
             }
-        });
-
-
+        })
     }
 
-    private void showErrorMessage(){
-        Toast.makeText(this, ERROR_MESSAGE, Toast.LENGTH_SHORT).show();
+    private fun showErrorMessage() {
+        Toast.makeText(this, ERROR_MESSAGE, Toast.LENGTH_SHORT).show()
     }
 
-    private void showCacheMessage(){
-        Toast.makeText(this, CACHE_MESSAGE, Toast.LENGTH_SHORT).show();
+    private fun showCacheMessage() {
+        Toast.makeText(this, CACHE_MESSAGE, Toast.LENGTH_SHORT).show()
     }
 
-    private boolean isInternetConnected(){
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    private val isInternetConnected: Boolean
+        private get() {
+            val cm = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+            return cm.activeNetworkInfo != null && cm.activeNetworkInfo!!.isConnected
+        }
+
+    override fun onItemClick(position: Int) {
+        val filmActivityIntent = Intent(this, FilmActivity::class.java)
+        filmActivityIntent.putExtra(
+            FILM_ID_EXTRA_KEY,
+            mViewModel!!.filmsLiveData!!.value!![position].id
+        )
+        startActivity(filmActivityIntent)
     }
 
-
-    @Override
-    public void onItemClick(int position) {
-        Intent filmActivityIntent = new Intent(this, FilmActivity.class);
-        filmActivityIntent.putExtra(FILM_ID_EXTRA_KEY, mViewModel.getFilmsLiveData().getValue().get(position).getId());
-        startActivity(filmActivityIntent);
+    companion object {
+        const val FILM_ID_EXTRA_KEY = "films"
+        const val TAG = "asd"
+        const val ERROR_MESSAGE = "No result in cache. Please connect to the internet"
+        const val CACHE_MESSAGE = "No internet connection. Showing cache"
     }
 }

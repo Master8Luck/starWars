@@ -1,24 +1,21 @@
-package com.example.starwars.activity;
+package com.example.starwars.activity
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import com.example.starwars.R
+import android.content.Intent
+import com.example.starwars.activity.FilmListActivity
 
-import android.content.Intent;
-import android.os.Bundle;
-
-import com.example.starwars.R;
-
-public class ThemeActivity extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_SplashTheme);
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_theme);
+class ThemeActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_SplashTheme)
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_theme)
         try {
-            Thread.sleep(2400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.sleep(2400)
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
         }
-        startActivity(new Intent(this, FilmListActivity.class));
+        startActivity(Intent(this, FilmListActivity::class.java))
     }
 }

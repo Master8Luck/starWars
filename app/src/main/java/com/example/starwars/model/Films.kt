@@ -1,27 +1,18 @@
-package com.example.starwars.model;
+package com.example.starwars.model
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+import com.example.starwars.model.Film
 
-import java.util.List;
-
-public class Films {
+class Films {
     @SerializedName("results")
-    private List<Film> films;
+    var films: List<Film>? = null
+        private set
+
     @SerializedName("total_pages")
-    private int pages;
+    val pages = 0
 
-    public Films() {
-    }
-
-    public Films(List<Film> results) {
-        this.films = results;
-    }
-
-    public List<Film> getFilms() {
-        return films;
-    }
-
-    public int getPages() {
-        return pages;
+    constructor() {}
+    constructor(results: List<Film>?) {
+        films = results
     }
 }

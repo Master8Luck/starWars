@@ -1,24 +1,23 @@
-package com.example.starwars.model;
+package com.example.starwars.model
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+import com.example.starwars.model.Genre
+import java.lang.StringBuilder
 
-public class Genre {
+class Genre {
     @SerializedName("name")
-    private String name;
+    val name: String? = null
 
-    public String getName() {
-        return name;
-    }
-    public static String convertToString(Genre[] genres) {
-        if (genres == null)
-            return "";
-        StringBuilder builder = new StringBuilder();
-        for (Genre genre: genres) {
-            builder.append(genre.getName()).append(", ");
+    companion object {
+        fun convertToString(genres: Array<Genre>?): String {
+            if (genres == null) return ""
+            val builder = StringBuilder()
+            for (genre in genres) {
+                builder.append(genre.name).append(", ")
+            }
+            builder.deleteCharAt(builder.length - 1)
+            builder.deleteCharAt(builder.length - 1)
+            return builder.toString()
         }
-        builder.deleteCharAt(builder.length() - 1);
-        builder.deleteCharAt(builder.length() - 1);
-        return builder.toString();
     }
 }
-

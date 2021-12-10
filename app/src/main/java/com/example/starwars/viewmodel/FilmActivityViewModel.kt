@@ -1,28 +1,21 @@
-package com.example.starwars.viewmodel;
+package com.example.starwars.viewmodel
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import com.example.starwars.model.Film
+import com.example.starwars.repository.FilmsRepository
+import com.example.starwars.repository.FilmsRepository.Companion.instance
 
-import com.example.starwars.model.Film;
-import com.example.starwars.repository.FilmsRepository;
+class FilmActivityViewModel : ViewModel() {
+    private var mRepository: FilmsRepository? = null
+    var filmLiveData: LiveData<Film?>? = null
+        private set
+    var indicator: LiveData<Boolean>? = null
+        private set
 
-public class FilmActivityViewModel extends ViewModel {
-
-    private FilmsRepository mRepository;
-    private LiveData<Film> mFilmLiveData;
-    private LiveData<Boolean> mIndicator;
-
-    public void init(int id) {
-        mRepository = FilmsRepository.getInstance();
-        mIndicator = mRepository.getLoadingIndicator();
-        mFilmLiveData = mRepository.getFilmFromAPI(id);
-    }
-
-    public LiveData<Film> getFilmLiveData() {
-        return mFilmLiveData;
-    }
-
-    public LiveData<Boolean> getIndicator() {
-        return mIndicator;
+    fun init(id: Int) {
+        mRepository = instance
+        indicator = mRepository!!.loadingIndicator
+        filmLiveData = mRepository!!.getFilmFromAPI(id)
     }
 }
