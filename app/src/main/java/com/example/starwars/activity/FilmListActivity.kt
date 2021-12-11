@@ -26,6 +26,7 @@ class FilmListActivity : AppCompatActivity(), FilmClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_film_list)
+        // TODO please try to avoid using deprecation methods\class and find some fresh solution
         mViewModel = ViewModelProviders.of(this).get(
             FilmListActivityViewModel::class.java
         )
@@ -36,6 +37,7 @@ class FilmListActivity : AppCompatActivity(), FilmClickListener {
             } else if (!isInternetConnected) {
                 showCacheMessage()
             }
+            // TODO possible exception could be because it is separated 'if clause' and will be called even if films be null
             mAdapter!!.setFilms(films as ArrayList<Film>)
         })
         mViewModel!!.indicatorLiveData!!.observe(this, { aBoolean ->
@@ -45,9 +47,11 @@ class FilmListActivity : AppCompatActivity(), FilmClickListener {
                 loadingProgressBar!!.visibility = View.INVISIBLE
             }
         })
+        // TODO about findviewbyid, read about viewbinding and implement in this project
         recyclerView = findViewById(R.id.rv_films)
         loadingProgressBar = findViewById(R.id.pb_loading_indicator)
         mAdapter = FilmsAdapter(ArrayList(), this, this)
+        // TODO you can specify layout manager, span count directly in xml
         recyclerView.layoutManager = GridLayoutManager(this, 2)
         recyclerView.adapter = mAdapter
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {

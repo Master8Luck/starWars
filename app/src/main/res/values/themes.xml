@@ -11,6 +11,7 @@
     </style>
 
     <style name="Theme.SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- TODO you had to import logo from figma https://yadi.sk/i/rt0KvBBv0oyTeQ in 5 densities mdpi,hdpi,xhdpi and etc.-->
         <item name="android:windowBackground">@drawable/starwars_logo_2</item>
         <item name="android:windowFullscreen">true</item>
     </style>

@@ -25,6 +25,12 @@ class FilmsRepository private constructor() {
     private val mFilmList = MutableLiveData<MutableList<Film>?>()
     val loadingIndicator = MutableLiveData<Boolean>()
     private val mFilm = MutableLiveData<Film?>()
+
+    /** TODO
+     * it's better to move info about pagination into viewModel (currentPage, maxPage),
+     * and make filmListFromAPI as function and pass into function above params
+     */
+
     var currentPage = 0
     var maxPage = 1
     val filmListFromAPI: MutableLiveData<MutableList<Film>?>
@@ -32,6 +38,7 @@ class FilmsRepository private constructor() {
             if (currentPage < maxPage) {
                 currentPage++
                 loadingIndicator.postValue(true)
+                // TODO use rxjava + retrofit for call api
                 mStarAPI.getBaseFilms(API_KEY, currentPage)
                     .enqueue(object : Callback<Films?> {
                         override fun onResponse(call: Call<Films?>, response: Response<Films?>) {
@@ -46,6 +53,10 @@ class FilmsRepository private constructor() {
 
                         override fun onFailure(call: Call<Films?>, t: Throwable) {
                             currentPage = 0
+                            /** TODO
+                             * not good way in any failure call database it's better to find
+                             * concrete condition for obtain cache items
+                             */
                             filmListFromDatabase
                         }
                     })
@@ -53,6 +64,7 @@ class FilmsRepository private constructor() {
             return mFilmList
         }
 
+    // TODO forgot about async tasks in android, it's deprecated, try to use rxjava
     private fun insertFilms(films: List<Film>) {
         object : AsyncTask<List<Film?>?, Void?, Void?>() {
 
@@ -65,6 +77,7 @@ class FilmsRepository private constructor() {
         }.execute(films)
     }
 
+    // TODO forgot about async tasks in android, it's deprecated, try to use rxjava
     private fun updateFilm(film: Film) {
         object : AsyncTask<Film, Void?, Void?>() {
             override fun doInBackground(vararg params: Film): Void? {
@@ -74,6 +87,7 @@ class FilmsRepository private constructor() {
         }.execute(film)
     }
 
+    // TODO also better replace with function
     val filmListFromDatabase: Unit
         get() {
             mDatabase!!.mFilmsDao()!!.films
@@ -86,6 +100,7 @@ class FilmsRepository private constructor() {
                     }
 
                     override fun onSuccess(t: List<Film?>?) {
+                        // TODO do we need MutableList or we can use List ?
                         mFilmList.postValue(t as MutableList<Film>?)
                         loadingIndicator.postValue(false)
                     }

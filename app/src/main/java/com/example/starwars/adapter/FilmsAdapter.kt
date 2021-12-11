@@ -22,6 +22,7 @@ class FilmsAdapter(
     context: Context?,
     filmClickListener: FilmClickListener
 ) : RecyclerView.Adapter<FilmsAdapter.ViewHolder>() {
+    // TODO we will get rid of this when you migrate to viewBinding
     private val inflater: LayoutInflater
     private val filmClickListener: FilmClickListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,6 +35,7 @@ class FilmsAdapter(
         val film = mFilms[position]
         holder.FilmTitleTextView.text = film.title
         holder.FilmInfoTextView.text = "Average vote: " + film.voteAverage
+        // TODO it's better to use context from holder        holder.itemView.context
         StarWarsApp.context?.let {
             Glide.with(it)
                 .load(IMAGE_BASE_URL + film.posterPath)
@@ -67,6 +69,7 @@ class FilmsAdapter(
         fun onItemClick(position: Int)
     }
 
+    // TODO seems like we have fixed this when we had call
     fun setFilms(filmList: ArrayList<Film>) {
         mFilms = filmList
         notifyDataSetChanged()
