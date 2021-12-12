@@ -17,7 +17,7 @@
             android:name=".activity.CrewActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.ThemeActivity"
+            android:name=".activity.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.SplashTheme">
             <intent-filter>

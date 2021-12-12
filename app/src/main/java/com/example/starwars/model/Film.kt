@@ -23,7 +23,7 @@ class Film {
     var posterPath: String? = null
 
     @SerializedName("genres")
-    lateinit var genres: Array<Genre>
+    var genres: @Nullable Array<Genre>? = null
 
     @SerializedName("overview")
     var overview: @Nullable String? = null

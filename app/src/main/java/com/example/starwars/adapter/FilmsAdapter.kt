@@ -9,12 +9,14 @@ import android.view.ViewGroup
 import com.example.starwars.R
 import androidx.annotation.RequiresApi
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.example.starwars.StarWarsApp
 import com.example.starwars.adapter.FilmsAdapter
 import android.widget.TextView
+import com.example.starwars.activity.FilmListActivity.Companion.TAG
 import java.util.ArrayList
 
 class FilmsAdapter(
@@ -25,6 +27,12 @@ class FilmsAdapter(
     // TODO we will get rid of this when you migrate to viewBinding
     private val inflater: LayoutInflater
     private val filmClickListener: FilmClickListener
+
+    init {
+        inflater = LayoutInflater.from(context)
+        this.filmClickListener = filmClickListener
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = inflater.inflate(R.layout.film_list_item, parent, false)
         return ViewHolder(view)
@@ -33,15 +41,16 @@ class FilmsAdapter(
     @RequiresApi(api = Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val film = mFilms[position]
+        Log.d(TAG, "onBindViewHolder pos: $position")
         holder.FilmTitleTextView.text = film.title
+        Log.d(TAG, "onBindViewHolder title: ${film.title}")
         holder.FilmInfoTextView.text = "Average vote: " + film.voteAverage
-        // TODO it's better to use context from holder        holder.itemView.context
-        StarWarsApp.context?.let {
-            Glide.with(it)
-                .load(IMAGE_BASE_URL + film.posterPath)
-                .error(R.drawable.ic_launcher_background)
-                .into(holder.FilmIconImageView)
-        }
+
+        Glide.with(holder.itemView.context)
+            .load(IMAGE_BASE_URL + film.posterPath)
+            .error(R.drawable.ic_launcher_background)
+            .into(holder.FilmIconImageView)
+
     }
 
     override fun getItemCount(): Int {
@@ -69,18 +78,13 @@ class FilmsAdapter(
         fun onItemClick(position: Int)
     }
 
-    // TODO seems like we have fixed this when we had call
     fun setFilms(filmList: ArrayList<Film>) {
         mFilms = filmList
+        Log.d(TAG, "setFilms: inside adapter")
         notifyDataSetChanged()
     }
 
     companion object {
         private const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w342/"
-    }
-
-    init {
-        inflater = LayoutInflater.from(context)
-        this.filmClickListener = filmClickListener
     }
 }
