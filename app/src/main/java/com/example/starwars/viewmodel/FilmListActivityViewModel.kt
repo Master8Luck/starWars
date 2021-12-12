@@ -11,7 +11,7 @@ import com.example.starwars.repository.FilmsRepository.Companion.instance
 class FilmListActivityViewModel : ViewModel() {
     private lateinit var mRepository: FilmsRepository
     var currentPage = 1
-    var filmsLiveData: LiveData<MutableList<Film>?>? = null
+    var filmsLiveData: LiveData<List<Film>?>? = null
         private set
     var indicatorLiveData: LiveData<Boolean>? = null
         private set

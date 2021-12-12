@@ -23,13 +23,13 @@ import kotlin.collections.ArrayList
 class FilmsRepository private constructor() {
     private val mStarAPI: StarAPI
     private val mDatabase: StarWarsDatabase?
-    private val mFilmList = MutableLiveData<MutableList<Film>?>()
+    private val mFilmList = MutableLiveData<List<Film>?>()
     val loadingIndicator = MutableLiveData<Boolean>()
     private val mFilm = MutableLiveData<Film?>()
 
     private var maxPage = 1
 
-    fun filmListFromAPI(currentPage: Int): MutableLiveData<MutableList<Film>?> {
+    fun filmListFromAPI(currentPage: Int): MutableLiveData<List<Film>?> {
             if (currentPage <= maxPage) {
                 loadingIndicator.postValue(true)
                 mStarAPI.getBaseFilms(currentPage)
@@ -37,8 +37,9 @@ class FilmsRepository private constructor() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ data ->
                         data.films?.let { insertFilms(it) }
-                        var currentFilms = mFilmList.value
-                        if (currentFilms == null) currentFilms = ArrayList()
+                        val currentFilms: MutableList<Film>
+                        if (mFilmList.value != null) currentFilms = mFilmList.value as MutableList
+                        else currentFilms = ArrayList()
                         data.films?.let { currentFilms.addAll(it) }
                         loadingIndicator.postValue(false)
                         mFilmList.postValue(currentFilms)
@@ -62,7 +63,7 @@ class FilmsRepository private constructor() {
             .subscribeOn(Schedulers.io())
     }
 
-    fun getFilmListFromDatabase(): MutableLiveData<MutableList<Film>?> {
+    fun getFilmListFromDatabase(): MutableLiveData<List<Film>?> {
             mDatabase!!.mFilmsDao()!!.films
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -96,7 +97,7 @@ class FilmsRepository private constructor() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe( {
-                it?.let { updateFilm(it) }
+                updateFilm(it)
                 mFilm.postValue(it)
                 loadingIndicator.postValue(false)
             }, {
