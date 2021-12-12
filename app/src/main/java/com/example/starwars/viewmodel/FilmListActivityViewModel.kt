@@ -9,20 +9,21 @@ import com.example.starwars.repository.FilmsRepository
 import com.example.starwars.repository.FilmsRepository.Companion.instance
 
 class FilmListActivityViewModel : ViewModel() {
-    private var mRepository: FilmsRepository? = null
+    private lateinit var mRepository: FilmsRepository
+    var currentPage = 1
     var filmsLiveData: LiveData<MutableList<Film>?>? = null
         private set
     var indicatorLiveData: LiveData<Boolean>? = null
         private set
 
     fun init() {
-        mRepository = instance
-        indicatorLiveData = mRepository!!.loadingIndicator
-        loadData()
-        Log.d(TAG, "init: after loadDataCalled")
+        mRepository = instance!!
+        indicatorLiveData = mRepository.loadingIndicator
     }
 
-    fun loadData() {
-        filmsLiveData = mRepository!!.filmListFromAPI()
+    fun loadData(isInternetConnected: Boolean) {
+        Log.d(TAG, "init: after loadDataCalled")
+        if (isInternetConnected) filmsLiveData = mRepository.filmListFromAPI(currentPage)
+        else filmsLiveData = mRepository.getFilmListFromDatabase()
     }
 }

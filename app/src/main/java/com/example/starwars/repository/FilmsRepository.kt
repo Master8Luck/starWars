@@ -9,6 +9,7 @@ import com.example.starwars.database.StarWarsDatabase
 import com.example.starwars.model.Film
 import com.example.starwars.retrofit.RetrofitClient
 import com.example.starwars.retrofit.StarAPI
+import com.example.starwars.viewmodel.FilmListActivityViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.annotations.NonNull
 import io.reactivex.rxjava3.core.Observable
@@ -26,16 +27,10 @@ class FilmsRepository private constructor() {
     val loadingIndicator = MutableLiveData<Boolean>()
     private val mFilm = MutableLiveData<Film?>()
 
-    /** TODO
-     * it's better to move info about pagination into viewModel (currentPage, maxPage),
-     * and make filmListFromAPI as function and pass into function above params
-     */
+    private var maxPage = 1
 
-    var currentPage = 0
-    var maxPage = 1
-    fun filmListFromAPI(): MutableLiveData<MutableList<Film>?> {
-            if (currentPage < maxPage) {
-                currentPage++
+    fun filmListFromAPI(currentPage: Int): MutableLiveData<MutableList<Film>?> {
+            if (currentPage <= maxPage) {
                 loadingIndicator.postValue(true)
                 mStarAPI.getBaseFilms(currentPage)
                     .subscribeOn(Schedulers.io())
@@ -49,12 +44,7 @@ class FilmsRepository private constructor() {
                         mFilmList.postValue(currentFilms)
                         maxPage = data.pages
                     }, {
-                        currentPage = 0
-//                            /** TODO
-//                             * not good way in any failure call database it's better to find
-//                             * concrete condition for obtain cache items
-//                             */
-                        getFilmListFromDatabase()
+                        Log.d(TAG, "filmListFromAPI got error: " + it.message)
                     })
             }
             return mFilmList
@@ -72,7 +62,7 @@ class FilmsRepository private constructor() {
             .subscribeOn(Schedulers.io())
     }
 
-    private fun getFilmListFromDatabase() {
+    fun getFilmListFromDatabase(): MutableLiveData<MutableList<Film>?> {
             mDatabase!!.mFilmsDao()!!.films
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -84,6 +74,7 @@ class FilmsRepository private constructor() {
                     mFilmList.postValue(null)
                     loadingIndicator.postValue(false)
                 })
+        return mFilmList
         }
 
     private fun getFilmFromDatabase(id: Int) {

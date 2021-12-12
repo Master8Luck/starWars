@@ -17,62 +17,42 @@ import com.example.starwars.StarWarsApp
 import com.example.starwars.adapter.FilmsAdapter
 import android.widget.TextView
 import com.example.starwars.activity.FilmListActivity.Companion.TAG
+import com.example.starwars.databinding.FilmListItemBinding
 import java.util.ArrayList
 
 class FilmsAdapter(
     private var mFilms: ArrayList<Film>,
-    context: Context?,
     filmClickListener: FilmClickListener
 ) : RecyclerView.Adapter<FilmsAdapter.ViewHolder>() {
-    // TODO we will get rid of this when you migrate to viewBinding
-    private val inflater: LayoutInflater
-    private val filmClickListener: FilmClickListener
-
-    init {
-        inflater = LayoutInflater.from(context)
-        this.filmClickListener = filmClickListener
-    }
+    private val filmClickListener: FilmClickListener = filmClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = inflater.inflate(R.layout.film_list_item, parent, false)
-        return ViewHolder(view)
+        val binding = FilmListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val film = mFilms[position]
-        Log.d(TAG, "onBindViewHolder pos: $position")
-        holder.FilmTitleTextView.text = film.title
-        Log.d(TAG, "onBindViewHolder title: ${film.title}")
-        holder.FilmInfoTextView.text = "Average vote: " + film.voteAverage
+        with(holder) {
+            val film = mFilms[position]
+            binding.filmItemTitle.text = film.title
+            binding.filmItemInfo.text = "Average vote: " + film.voteAverage
 
-        Glide.with(holder.itemView.context)
-            .load(IMAGE_BASE_URL + film.posterPath)
-            .error(R.drawable.ic_launcher_background)
-            .into(holder.FilmIconImageView)
+            Glide.with(holder.itemView.context)
+                .load(IMAGE_BASE_URL + film.posterPath)
+                .error(R.drawable.ic_launcher_background)
+                .into(binding.filmItemIcon)
 
+            holder.itemView.setOnClickListener { filmClickListener.onItemClick(bindingAdapterPosition) }
+        }
     }
 
     override fun getItemCount(): Int {
         return mFilms.size
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-        View.OnClickListener {
-        var FilmTitleTextView: TextView
-        var FilmInfoTextView: TextView
-        var FilmIconImageView: ImageView
-        override fun onClick(v: View) {
-            filmClickListener.onItemClick(adapterPosition)
-        }
-
-        init {
-            itemView.setOnClickListener(this)
-            FilmTitleTextView = itemView.findViewById(R.id.film_item_title)
-            FilmInfoTextView = itemView.findViewById(R.id.film_item_info)
-            FilmIconImageView = itemView.findViewById(R.id.film_item_icon)
-        }
-    }
+    inner class ViewHolder(val binding: FilmListItemBinding)
+        : RecyclerView.ViewHolder(binding.root)
 
     interface FilmClickListener {
         fun onItemClick(position: Int)

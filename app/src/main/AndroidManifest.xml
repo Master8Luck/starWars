@@ -13,12 +13,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.StarWars">
-        <activity
-            android:name=".activity.CrewActivity"
-            android:exported="false" />
+
         <activity
             android:name=".activity.SplashActivity"
             android:exported="true"
+            android:noHistory="true"
             android:theme="@style/Theme.SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,12 +25,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activity.CrewActivity"
+            android:exported="false" />
+
         <activity
             android:name=".activity.FilmActivity"
             android:exported="false" />
+
         <activity
             android:name=".activity.FilmListActivity"
             android:exported="true"></activity>
+
     </application>
 
 </manifest>

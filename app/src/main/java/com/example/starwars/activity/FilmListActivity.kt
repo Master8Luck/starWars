@@ -33,19 +33,23 @@ class FilmListActivity : AppCompatActivity(), FilmClickListener {
         binding = ActivityFilmListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mAdapter = FilmsAdapter(ArrayList(), this, this)
+        mAdapter = FilmsAdapter(ArrayList(), this)
 
         mViewModel!!.init()
+        mViewModel.loadData(isInternetConnected)
         mViewModel!!.filmsLiveData!!.observe(this, { films ->
             Log.d(TAG, "onCreate: observer got the response")
             if (films == null || films.isEmpty()) {
                 showErrorMessage()
+                mViewModel.currentPage = 0
             } else {
                 if (!isInternetConnected) {
                     showCacheMessage()
+                    mViewModel.currentPage = 0
                 }
-                Log.d(TAG, "onCreate: set givven films")
+                Log.d(TAG, "onCreate: set given films")
                 mAdapter.setFilms(films as ArrayList<Film>)
+                mViewModel.currentPage += 1
             }
 
         })
@@ -64,7 +68,7 @@ class FilmListActivity : AppCompatActivity(), FilmClickListener {
                 super.onScrolled(recyclerView, dx, dy)
                 Log.d(TAG, "onScrolled: ")
                 if (!recyclerView.canScrollVertically(1)) {
-                    mViewModel!!.loadData()
+                    mViewModel!!.loadData(isInternetConnected)
                 }
             }
         })
@@ -90,6 +94,7 @@ class FilmListActivity : AppCompatActivity(), FilmClickListener {
             FILM_ID_EXTRA_KEY,
             mViewModel!!.filmsLiveData!!.value!![position].id
         )
+        Log.d(TAG, "onItemClick: $position ")
         startActivity(filmActivityIntent)
     }
 
