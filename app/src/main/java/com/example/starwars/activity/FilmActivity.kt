@@ -24,7 +24,8 @@ import java.util.*
 
 class FilmActivity : AppCompatActivity() {
     private val mViewModel: FilmActivityViewModel by viewModels()
-    private lateinit var binding: ActivityFilmBinding
+    // TODO can we not do inflating in onCreate and made it lazy, sample : private val binding by lazy { ActivityFilmBinding.inflate(layoutInflater) } and read about lazy initialization
+    private lateinit var binding : ActivityFilmBinding
     private lateinit var mAdapter: CrewAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,12 +60,14 @@ class FilmActivity : AppCompatActivity() {
             binding.filmGenres.text = Genre.convertToString(film.genres)
             binding.filmOverview.text = film.overview
             mAdapter.setData(film.crews)
+            // TODO avoid using notify from view, delegate it to adapter when you set data
             mAdapter.notifyDataSetChanged()
         } else {
             Toast.makeText(this, FilmListActivity.ERROR_MESSAGE, Toast.LENGTH_SHORT).show()
         }
     }
 
+    // TODO also noticed that this part of code used in several places will be good to separate it in some class named ConnectionUtils and get it only from here
     private val isInternetConnected: Boolean
         private get() {
             val cm = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager

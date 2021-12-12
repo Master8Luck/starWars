@@ -36,6 +36,7 @@ class FilmsAdapter(
         with(holder) {
             val film = mFilms[position]
             binding.filmItemTitle.text = film.title
+            // TODO move "Average vote: " to string resources
             binding.filmItemInfo.text = "Average vote: " + film.voteAverage
 
             Glide.with(holder.itemView.context)

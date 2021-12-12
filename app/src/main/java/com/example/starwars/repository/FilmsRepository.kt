@@ -36,6 +36,7 @@ class FilmsRepository private constructor() {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ data ->
+                        // TODO let's divide adding to database from showing data and add this action into doOnSuccess operator of rx
                         data.films?.let { insertFilms(it) }
                         val currentFilms: MutableList<Film>
                         if (mFilmList.value != null) currentFilms = mFilmList.value as MutableList
@@ -52,6 +53,7 @@ class FilmsRepository private constructor() {
         }
 
     private fun insertFilms(films: List<Film>) {
+        // TODO try to do it reactive like         Observable.fromIterable(films) or you can create method in DAO insertAll
         for (film: Film in films) {
             Observable.fromCallable { -> mDatabase!!.mFilmsDao()!!.insert(film)}
                 .subscribeOn(Schedulers.io())
