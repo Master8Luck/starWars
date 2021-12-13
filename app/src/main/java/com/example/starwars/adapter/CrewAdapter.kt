@@ -1,18 +1,14 @@
 package com.example.starwars.adapter
 
-import android.content.Context
-import com.example.starwars.model.Crew
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import com.example.starwars.R
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.starwars.ConnectionUtils.Companion.IMAGE_CREW_BASE_URL
+import com.example.starwars.R
 import com.example.starwars.StarWarsApp
-import com.example.starwars.adapter.CrewAdapter
-import android.widget.TextView
 import com.example.starwars.databinding.CrewListItemBinding
+import com.example.starwars.model.Crew
 
 class CrewAdapter(private val mCrews: MutableList<Crew>?) :
     RecyclerView.Adapter<CrewAdapter.ViewHolder>() {
@@ -43,11 +39,10 @@ class CrewAdapter(private val mCrews: MutableList<Crew>?) :
     inner class ViewHolder(val binding: CrewListItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     fun setData(data: List<Crew>?) {
-        if (data != null) mCrews!!.addAll(data)
-    }
-
-    companion object {
-        private const val IMAGE_CREW_BASE_URL = "https://image.tmdb.org/t/p/w300/"
+        if (data != null) {
+            mCrews!!.addAll(data)
+            notifyDataSetChanged()
+        }
     }
 
 }

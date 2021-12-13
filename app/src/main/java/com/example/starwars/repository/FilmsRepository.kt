@@ -3,21 +3,14 @@ package com.example.starwars.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.starwars.activity.FilmListActivity
 import com.example.starwars.activity.FilmListActivity.Companion.TAG
 import com.example.starwars.database.StarWarsDatabase
 import com.example.starwars.model.Film
 import com.example.starwars.retrofit.RetrofitClient
 import com.example.starwars.retrofit.StarAPI
-import com.example.starwars.viewmodel.FilmListActivityViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.annotations.NonNull
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.observers.DisposableSingleObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.collections.ArrayList
 
 class FilmsRepository private constructor() {
@@ -35,9 +28,8 @@ class FilmsRepository private constructor() {
                 mStarAPI.getBaseFilms(currentPage)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSuccess { data -> data.films?.let { insertFilms(it) } }
                     .subscribe({ data ->
-                        // TODO let's divide adding to database from showing data and add this action into doOnSuccess operator of rx
-                        data.films?.let { insertFilms(it) }
                         val currentFilms: MutableList<Film>
                         if (mFilmList.value != null) currentFilms = mFilmList.value as MutableList
                         else currentFilms = ArrayList()
@@ -53,16 +45,21 @@ class FilmsRepository private constructor() {
         }
 
     private fun insertFilms(films: List<Film>) {
-        // TODO try to do it reactive like         Observable.fromIterable(films) or you can create method in DAO insertAll
-        for (film: Film in films) {
-            Observable.fromCallable { -> mDatabase!!.mFilmsDao()!!.insert(film)}
-                .subscribeOn(Schedulers.io())
+        films.map {film -> Observable.fromCallable {
+            -> mDatabase!!.mFilmsDao()!!.insert(film)
+            Log.d(TAG, "insertFilms: " + film.title + " " + film.crews)
         }
+            .subscribeOn(Schedulers.io())
+            .subscribe() }
     }
 
     private fun updateFilm(film: Film) {
-        Observable.fromCallable { -> mDatabase!!.mFilmsDao()!!.update(film)}
+        Observable.fromCallable {
+            -> mDatabase!!.mFilmsDao()!!.update(film)
+            Log.d(TAG, "updateFilm: " + film.title + " " + film.crews)
+        }
             .subscribeOn(Schedulers.io())
+            .subscribe()
     }
 
     fun getFilmListFromDatabase(): MutableLiveData<List<Film>?> {
@@ -70,8 +67,7 @@ class FilmsRepository private constructor() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                           // TODO do we need MutableList or we can use List ?
-                        mFilmList.postValue(it as MutableList<Film>?)
+                        mFilmList.postValue(it)
                         loadingIndicator.postValue(false)
                 }, {
                     mFilmList.postValue(null)
@@ -86,9 +82,12 @@ class FilmsRepository private constructor() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 mFilm.postValue(it)
+                Log.d(TAG, "getFilmFromDatabase: " + it.title)
+                Log.d(TAG, "and crew: " + it.crews)
                 loadingIndicator.postValue(false)
             }, {
                 mFilm.postValue(null)
+                Log.d(TAG, "getFilmFromDatabase: Error!!")
                 loadingIndicator.postValue(false)
             })
     }
@@ -100,6 +99,7 @@ class FilmsRepository private constructor() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe( {
                 updateFilm(it)
+                Log.d(TAG, "getFilmFromAPI: " + it.title + " " + it.crews + " and updated")
                 mFilm.postValue(it)
                 loadingIndicator.postValue(false)
             }, {

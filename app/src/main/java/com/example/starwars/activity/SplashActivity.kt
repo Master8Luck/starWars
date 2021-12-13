@@ -13,8 +13,6 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        // TODO it isn't necessary to set image programmatically, you can do it in xml
-        binding.logoIv.setImageResource(R.drawable.logo)
 
         Handler(Looper.getMainLooper()).postDelayed({
             startActivity(Intent(this, FilmListActivity::class.java))

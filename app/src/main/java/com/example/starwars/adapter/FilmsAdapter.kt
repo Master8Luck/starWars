@@ -1,24 +1,19 @@
 package com.example.starwars.adapter
 
-import android.content.Context
-import com.example.starwars.model.Film
-import com.example.starwars.adapter.FilmsAdapter.FilmClickListener
-import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import com.example.starwars.R
-import androidx.annotation.RequiresApi
 import android.os.Build
 import android.util.Log
-import android.view.View
-import android.widget.ImageView
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.starwars.StarWarsApp
-import com.example.starwars.adapter.FilmsAdapter
-import android.widget.TextView
+import com.example.starwars.ConnectionUtils.Companion.IMAGE_BASE_URL
+import com.example.starwars.R
+import com.example.starwars.StarWarsApp.Companion.context
 import com.example.starwars.activity.FilmListActivity.Companion.TAG
 import com.example.starwars.databinding.FilmListItemBinding
-import java.util.ArrayList
+import com.example.starwars.model.Film
+import java.util.*
 
 class FilmsAdapter(
     private var mFilms: ArrayList<Film>,
@@ -36,15 +31,14 @@ class FilmsAdapter(
         with(holder) {
             val film = mFilms[position]
             binding.filmItemTitle.text = film.title
-            // TODO move "Average vote: " to string resources
-            binding.filmItemInfo.text = "Average vote: " + film.voteAverage
+            binding.filmItemInfo.text = context?.getString(R.string.film_item_info) + film.voteAverage
 
             Glide.with(holder.itemView.context)
                 .load(IMAGE_BASE_URL + film.posterPath)
                 .error(R.drawable.ic_launcher_background)
                 .into(binding.filmItemIcon)
 
-            holder.itemView.setOnClickListener { filmClickListener.onItemClick(bindingAdapterPosition) }
+            holder.itemView.setOnClickListener { filmClickListener.onItemClick(adapterPosition) }
         }
     }
 
@@ -65,7 +59,4 @@ class FilmsAdapter(
         notifyDataSetChanged()
     }
 
-    companion object {
-        private const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w342/"
-    }
 }
