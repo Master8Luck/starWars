@@ -1,47 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
     <ImageView
+        android:id="@+id/crew_item_iv"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:id="@+id/crew_item_iv"
         android:layout_weight="1"
-        android:padding="2dp"
-        />
+        android:padding="2dp" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
         android:id="@+id/crew_item_hero_tv"
-        android:fontFamily="sans-serif"
-        android:gravity="center"
+        style="@style/info_white"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="10"
-        android:padding="2dp"
-        />
-    <TextView
-
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="..."
         android:gravity="center"
-        android:fontFamily="sans-serif"
-        android:layout_weight="1"
-        android:padding="2dp"
-        />
+        android:padding="2dp" />
 
     <TextView
+
+        style="@style/info"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/crew_item_person_tv"
-        android:layout_weight="5"
-        android:fontFamily="sans-serif-condensed-light"
-        android:gravity="center_vertical|end"
+        android:layout_weight="1"
+        android:gravity="center"
         android:padding="2dp"
-        />
+        android:text="@string/crew_item_divider" />
 
+    <TextView
+        android:id="@+id/crew_item_person_tv"
+        style="@style/info"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+        android:gravity="center_vertical|end"
+        android:padding="2dp" />
 
 
 </LinearLayout>

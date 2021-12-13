@@ -1,115 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <ImageView
+        android:id="@+id/film_icon"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:id="@+id/film_icon"
         android:layout_gravity="center_horizontal|top"
         android:layout_weight="1"
-        android:padding="4dp"
-        />
+        android:padding="4dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        android:layout_weight="2">
+        android:layout_weight="2"
+        android:orientation="vertical">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/film_title"
-            android:layout_gravity="center_horizontal"
-            android:textSize="18sp"
-            android:fontFamily="sans-serif"
-            android:padding="4dp"
-            />
-
-        <TextView
+            style="@style/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="4dp" />
+
+        <TextView
             android:id="@+id/film_date"
-            android:layout_gravity="center_horizontal"
-            android:textSize="14sp"
-            android:fontFamily="serif"
-            android:padding="2dp"
-            />
-
-        <TextView
+            style="@style/info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/film_genres"
             android:layout_gravity="center_horizontal"
-            android:fontFamily="serif"
-            android:textSize="14sp"
-            android:padding="2dp"
-            />
+            android:padding="2dp" />
 
         <TextView
+            android:id="@+id/film_genres"
+            style="@style/info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="2dp" />
+
+        <TextView
+            style="@style/header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:text="Synopsis"
-            android:paddingTop="4dp"
             android:padding="2dp"
-            />
+            android:paddingTop="4dp"
+            android:text="@string/synopsis" />
+
         <TextView
+            android:id="@+id/film_overview"
+            style="@style/base"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/film_overview"
+            android:text="dfgergaergaertaert"
             android:layout_gravity="center_horizontal"
             android:gravity="fill_horizontal"
-            android:fontFamily="sans-serif"
+            android:lineSpacingMultiplier="1.2"
             android:maxLines="4"
-            android:textSize="14sp"
-            android:padding="2dp"
-            />
+            android:padding="2dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
             android:orientation="horizontal"
-            >
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp">
 
             <TextView
+                style="@style/header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:textSize="16sp"
                 android:layout_weight="1"
-                android:textStyle="bold"
-                android:text="Cast &amp; Crew"
                 android:padding="2dp"
-                />
+                android:text="@string/cast_and_crew" />
+
             <TextView
+                android:id="@+id/film_to_full_crew"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:gravity="end"
-                android:id="@+id/film_to_full_crew"
-                android:textSize="16sp"
-                android:text="View all"
                 android:clickable="true"
-                android:textColor="#2196F3"
+                android:focusable="true"
+                android:gravity="end"
                 android:padding="2dp"
-                android:focusable="true" />
+                android:text="View all"
+                android:textColor="#2196F3"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/film_crew_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/film_crew_rv"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </LinearLayout>
 

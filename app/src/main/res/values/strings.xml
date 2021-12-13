@@ -2,4 +2,8 @@
     <string name="app_name">StarWars</string>
     <string name="error_message">Failed to load films. Please check your internet connection and try again</string>
     <string name="film_item_info">Average vote: </string>
+    <string name="image_of_the_film_content_description">Image of the film</string>
+    <string name="crew_item_divider">...</string>
+    <string name="synopsis">Synopsis</string>
+    <string name="cast_and_crew"><![CDATA[Cast & Crew]]></string>
 </resources>
