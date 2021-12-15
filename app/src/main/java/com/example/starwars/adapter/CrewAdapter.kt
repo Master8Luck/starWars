@@ -18,6 +18,7 @@ class CrewAdapter(private val mCrews: MutableList<Crew>?) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        // TODO in holder we have bindning, why dont immediately apply to holder.bindning and in future not type bindning. several times
         with(holder) {
             val crew = mCrews!![position]
             binding.crewItemHeroTv.text = crew.name

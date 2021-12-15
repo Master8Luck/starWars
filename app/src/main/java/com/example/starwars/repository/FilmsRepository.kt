@@ -45,6 +45,7 @@ class FilmsRepository private constructor() {
         }
 
     private fun insertFilms(films: List<Film>) {
+        // TODO it isn't reactive way, reactive way will be Observable.fromIterable
         films.map {film -> Observable.fromCallable {
             -> mDatabase!!.mFilmsDao()!!.insert(film)
             Log.d(TAG, "insertFilms: " + film.title + " " + film.crews)

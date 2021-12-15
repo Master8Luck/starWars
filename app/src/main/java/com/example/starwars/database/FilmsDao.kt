@@ -13,6 +13,7 @@ interface FilmsDao {
     @Query("SELECT * FROM Film WHERE id=:id")
     fun getFilm(id: Int): Single<Film>
 
+    // TODO what about method insertAll ?
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(film :Film)
 

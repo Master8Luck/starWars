@@ -11,6 +11,7 @@ import com.example.starwars.repository.FilmsRepository.Companion.instance
 class FilmListActivityViewModel : ViewModel() {
     private lateinit var mRepository: FilmsRepository
     var currentPage = 1
+    // TODO why liveData is nullable, maybe make it lateinit
     var filmsLiveData: LiveData<List<Film>?>? = null
         private set
     var indicatorLiveData: LiveData<Boolean>? = null

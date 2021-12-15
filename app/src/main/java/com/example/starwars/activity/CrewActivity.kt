@@ -30,6 +30,7 @@ class CrewActivity : AppCompatActivity() {
                     mAdapter!!.setData(film.crews)
                 }
             })
+        // TODO I think it's redundant to pass empty list, if adapter can do it for us, think up how to do it clever in every adapter also make items in adapter not nullable
         mAdapter = CrewAdapter(ArrayList())
         binding.crewRv.adapter = mAdapter
     }
