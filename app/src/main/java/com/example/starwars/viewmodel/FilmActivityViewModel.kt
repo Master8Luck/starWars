@@ -4,18 +4,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.starwars.model.Film
 import com.example.starwars.repository.FilmsRepository
-import com.example.starwars.repository.FilmsRepository.Companion.instance
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class FilmActivityViewModel : ViewModel() {
-    private var mRepository: FilmsRepository? = null
-    var filmLiveData: LiveData<Film?>? = null
+@HiltViewModel
+class FilmActivityViewModel @Inject constructor(private var mRepository: FilmsRepository) : ViewModel() {
+    lateinit var filmLiveData: LiveData<Film?>
         private set
-    var indicator: LiveData<Boolean>? = null
+    lateinit var indicator: LiveData<Boolean>
         private set
+    private var mId = 0
 
     fun init(id: Int) {
-        mRepository = instance
-        indicator = mRepository!!.loadingIndicator
-        filmLiveData = mRepository!!.getFilmFromAPI(id)
+        mId = id
+        indicator = mRepository.loadingIndicator
+    }
+
+    fun loadData(isInternetConnected: Boolean) {
+        if (isInternetConnected) filmLiveData = mRepository.getFilmFromAPI(mId)
+        else filmLiveData = mRepository.getFilmFromDatabase(mId)
     }
 }

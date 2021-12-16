@@ -6,21 +6,42 @@ import androidx.lifecycle.MutableLiveData
 import com.example.starwars.activity.FilmListActivity.Companion.TAG
 import com.example.starwars.database.StarWarsDatabase
 import com.example.starwars.model.Film
-import com.example.starwars.retrofit.RetrofitClient
 import com.example.starwars.retrofit.StarAPI
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlin.collections.ArrayList
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class FilmsRepository private constructor() {
-    private val mStarAPI: StarAPI
-    private val mDatabase: StarWarsDatabase?
+@Singleton
+class FilmsRepository @Inject constructor(private val mStarAPI: StarAPI, private val database: StarWarsDatabase) {
+
     private val mFilmList = MutableLiveData<List<Film>?>()
     val loadingIndicator = MutableLiveData<Boolean>()
     private val mFilm = MutableLiveData<Film?>()
 
     private var maxPage = 1
+
+
+    private fun insertFilms(films: List<Film>) {
+        Observable.fromCallable { this.database.mFilmsDao().insertAll(films) }
+            .subscribeOn(Schedulers.io())
+            .subscribe()
+    //  Reactive variant:
+    //
+//        Observable.fromIterable(films)
+//            .subscribeOn(Schedulers.io())
+//            .subscribe{ film -> mDatabase.mFilmsDao().insert(film) }
+    }
+
+    private fun updateFilm(film: Film) {
+        Observable.fromCallable {
+            -> this.database.mFilmsDao().update(film)
+            Log.d(TAG, "updateFilm: " + film.title + " " + film.crews)
+        }
+            .subscribeOn(Schedulers.io())
+            .subscribe()
+    }
 
     fun filmListFromAPI(currentPage: Int): MutableLiveData<List<Film>?> {
             if (currentPage <= maxPage) {
@@ -41,30 +62,11 @@ class FilmsRepository private constructor() {
                         Log.d(TAG, "filmListFromAPI got error: " + it.message)
                     })
             }
-            return mFilmList
-        }
-
-    private fun insertFilms(films: List<Film>) {
-        // TODO it isn't reactive way, reactive way will be Observable.fromIterable
-        films.map {film -> Observable.fromCallable {
-            -> mDatabase!!.mFilmsDao()!!.insert(film)
-            Log.d(TAG, "insertFilms: " + film.title + " " + film.crews)
-        }
-            .subscribeOn(Schedulers.io())
-            .subscribe() }
-    }
-
-    private fun updateFilm(film: Film) {
-        Observable.fromCallable {
-            -> mDatabase!!.mFilmsDao()!!.update(film)
-            Log.d(TAG, "updateFilm: " + film.title + " " + film.crews)
-        }
-            .subscribeOn(Schedulers.io())
-            .subscribe()
+        return mFilmList
     }
 
     fun getFilmListFromDatabase(): MutableLiveData<List<Film>?> {
-            mDatabase!!.mFilmsDao()!!.films
+            this.database.mFilmsDao().films
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -75,10 +77,10 @@ class FilmsRepository private constructor() {
                     loadingIndicator.postValue(false)
                 })
         return mFilmList
-        }
+    }
 
-    private fun getFilmFromDatabase(id: Int) {
-        mDatabase!!.mFilmsDao()!!.getFilm(id)
+    fun getFilmFromDatabase(id: Int): LiveData<Film?>  {
+        this.database.mFilmsDao().getFilm(id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -91,6 +93,7 @@ class FilmsRepository private constructor() {
                 Log.d(TAG, "getFilmFromDatabase: Error!!")
                 loadingIndicator.postValue(false)
             })
+        return mFilm
     }
 
     fun getFilmFromAPI(id: Int): LiveData<Film?> {
@@ -104,26 +107,10 @@ class FilmsRepository private constructor() {
                 mFilm.postValue(it)
                 loadingIndicator.postValue(false)
             }, {
-                getFilmFromDatabase(id)
+                mFilm.postValue(null)
+                loadingIndicator.postValue(false)
             })
         return mFilm
     }
 
-    companion object {
-        @JvmStatic
-        var instance: FilmsRepository? = null
-            get() {
-                if (field == null) {
-                    field = FilmsRepository()
-                }
-                return field
-            }
-            private set
-    }
-
-    init {
-        val retrofit = RetrofitClient.instance
-        mStarAPI = retrofit!!.create(StarAPI::class.java)
-        mDatabase = StarWarsDatabase.instance
-    }
 }

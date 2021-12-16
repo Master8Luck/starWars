@@ -7,8 +7,8 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.starwars.API_ENDPOINTS.IMAGE_BASE_URL
 import com.example.starwars.ConnectionUtils
-import com.example.starwars.ConnectionUtils.Companion.IMAGE_BASE_URL
 import com.example.starwars.R
 import com.example.starwars.activity.FilmListActivity.Companion.TAG
 import com.example.starwars.adapter.CrewAdapter
@@ -16,12 +16,15 @@ import com.example.starwars.databinding.ActivityFilmBinding
 import com.example.starwars.model.Film
 import com.example.starwars.model.Genre
 import com.example.starwars.viewmodel.FilmActivityViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class FilmActivity : AppCompatActivity() {
 
-    private val mViewModel: FilmActivityViewModel by viewModels()
-    private lateinit var mAdapter: CrewAdapter
+    private val mViewModel: FilmActivityViewModel by viewModels<FilmActivityViewModel>()
+    @Inject lateinit var mAdapter: CrewAdapter
     private val binding by lazy { ActivityFilmBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,10 +33,10 @@ class FilmActivity : AppCompatActivity() {
 
         val id = intent.getIntExtra(FilmListActivity.FILM_ID_EXTRA_KEY, 0)
         mViewModel.init(id)
-        mViewModel.filmLiveData!!.observe(this,
+        mViewModel.loadData(ConnectionUtils.isInternetConnected(this))
+        mViewModel.filmLiveData.observe(this,
             { t -> setData(t) })
 
-        mAdapter = CrewAdapter(ArrayList())
         binding.filmCrewRv.adapter = mAdapter
 
         binding.filmToFullCrew.setOnClickListener {
@@ -64,8 +67,13 @@ class FilmActivity : AppCompatActivity() {
 
             }
         } else {
+            mAdapter.setData(null)
             Toast.makeText(this, FilmListActivity.ERROR_MESSAGE, Toast.LENGTH_SHORT).show()
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+    }
 }

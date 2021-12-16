@@ -7,19 +7,17 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.starwars.ConnectionUtils.Companion.IMAGE_BASE_URL
+import com.example.starwars.API_ENDPOINTS.IMAGE_BASE_URL
 import com.example.starwars.R
 import com.example.starwars.StarWarsApp.Companion.context
 import com.example.starwars.activity.FilmListActivity.Companion.TAG
 import com.example.starwars.databinding.FilmListItemBinding
 import com.example.starwars.model.Film
-import java.util.*
+import javax.inject.Inject
 
-class FilmsAdapter(
-    private var mFilms: ArrayList<Film>,
-    filmClickListener: FilmClickListener
-) : RecyclerView.Adapter<FilmsAdapter.ViewHolder>() {
-    private val filmClickListener: FilmClickListener = filmClickListener
+class FilmsAdapter @Inject constructor() : RecyclerView.Adapter<FilmsAdapter.ViewHolder>() {
+    private var mFilms: ArrayList<Film> = ArrayList()
+    lateinit var filmClickListener: FilmClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = FilmListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -33,12 +31,12 @@ class FilmsAdapter(
             binding.filmItemTitle.text = film.title
             binding.filmItemInfo.text = context?.getString(R.string.film_item_info) + film.voteAverage
 
-            Glide.with(holder.itemView.context)
+            Glide.with(itemView.context)
                 .load(IMAGE_BASE_URL + film.posterPath)
                 .error(R.drawable.ic_launcher_background)
                 .into(binding.filmItemIcon)
 
-            holder.itemView.setOnClickListener { filmClickListener.onItemClick(adapterPosition) }
+            itemView.setOnClickListener { filmClickListener.onItemClick(adapterPosition) }
         }
     }
 

@@ -6,19 +6,18 @@ import androidx.lifecycle.ViewModel
 import com.example.starwars.activity.FilmListActivity.Companion.TAG
 import com.example.starwars.model.Film
 import com.example.starwars.repository.FilmsRepository
-import com.example.starwars.repository.FilmsRepository.Companion.instance
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class FilmListActivityViewModel : ViewModel() {
-    private lateinit var mRepository: FilmsRepository
+@HiltViewModel
+class FilmListActivityViewModel @Inject constructor(private var mRepository: FilmsRepository) : ViewModel() {
     var currentPage = 1
-    // TODO why liveData is nullable, maybe make it lateinit
-    var filmsLiveData: LiveData<List<Film>?>? = null
+    lateinit var filmsLiveData: LiveData<List<Film>?>
         private set
-    var indicatorLiveData: LiveData<Boolean>? = null
+    lateinit var indicatorLiveData: LiveData<Boolean>
         private set
 
     fun init() {
-        mRepository = instance!!
         indicatorLiveData = mRepository.loadingIndicator
     }
 

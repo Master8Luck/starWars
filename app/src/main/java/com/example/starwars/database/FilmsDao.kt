@@ -3,7 +3,6 @@ package com.example.starwars.database
 import androidx.room.*
 import com.example.starwars.model.Film
 import io.reactivex.rxjava3.core.Single
-import java.util.*
 
 @Dao
 interface FilmsDao {
@@ -13,9 +12,8 @@ interface FilmsDao {
     @Query("SELECT * FROM Film WHERE id=:id")
     fun getFilm(id: Int): Single<Film>
 
-    // TODO what about method insertAll ?
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(film :Film)
+    fun insertAll(films :List<Film>)
 
     @Update
     fun update(film: Film)

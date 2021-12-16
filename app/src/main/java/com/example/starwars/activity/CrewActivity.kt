@@ -4,18 +4,18 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.starwars.R
+import com.example.starwars.ConnectionUtils
 import com.example.starwars.adapter.CrewAdapter
 import com.example.starwars.databinding.ActivityCrewBinding
 import com.example.starwars.viewmodel.FilmActivityViewModel
-import java.util.*
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class CrewActivity : AppCompatActivity() {
-    private val mViewModel: FilmActivityViewModel by viewModels()
-    private lateinit var mAdapter: CrewAdapter
+    private val mViewModel: FilmActivityViewModel by viewModels<FilmActivityViewModel>()
+    @Inject lateinit var mAdapter: CrewAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityCrewBinding.inflate(layoutInflater)
@@ -23,15 +23,15 @@ class CrewActivity : AppCompatActivity() {
         val id = intent.getIntExtra(FilmListActivity.FILM_ID_EXTRA_KEY, 0)
 
         mViewModel.init(id)
-        mViewModel.filmLiveData!!.observe(
+        mViewModel.loadData(ConnectionUtils.isInternetConnected(this))
+        mViewModel.filmLiveData.observe(
             this,
             Observer { film ->
                 if (film != null) {
-                    mAdapter!!.setData(film.crews)
+                    mAdapter.setData(film.crews)
                 }
             })
-        // TODO I think it's redundant to pass empty list, if adapter can do it for us, think up how to do it clever in every adapter also make items in adapter not nullable
-        mAdapter = CrewAdapter(ArrayList())
+
         binding.crewRv.adapter = mAdapter
     }
 }

@@ -9,31 +9,33 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.starwars.ConnectionUtils
-import com.example.starwars.activity.FilmActivity
 import com.example.starwars.adapter.FilmsAdapter
 import com.example.starwars.adapter.FilmsAdapter.FilmClickListener
 import com.example.starwars.databinding.ActivityFilmListBinding
 import com.example.starwars.model.Film
 import com.example.starwars.viewmodel.FilmListActivityViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class FilmListActivity : AppCompatActivity(), FilmClickListener {
 
     private lateinit var binding: ActivityFilmListBinding
-    private lateinit var mAdapter: FilmsAdapter
-    val mViewModel: FilmListActivityViewModel by viewModels()
+    @Inject lateinit var mAdapter: FilmsAdapter
+    val mViewModel: FilmListActivityViewModel by viewModels<FilmListActivityViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFilmListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mAdapter = FilmsAdapter(ArrayList(), this)
+        mAdapter.filmClickListener = this
 
         with(mViewModel) {
             init()
             loadData(ConnectionUtils.isInternetConnected(this@FilmListActivity))
-            filmsLiveData!!.observe(this@FilmListActivity, { films ->
+            filmsLiveData.observe(this@FilmListActivity, { films ->
                 Log.d(TAG, "onCreate: observer got the response")
                 if (films == null || films.isEmpty()) {
                     showErrorMessage()
@@ -49,7 +51,7 @@ class FilmListActivity : AppCompatActivity(), FilmClickListener {
                 }
             })
 
-            indicatorLiveData!!.observe(this@FilmListActivity, {
+            indicatorLiveData.observe(this@FilmListActivity, {
                     isLoading -> binding.pbLoadingIndicator.isVisible = isLoading
             })
         }
@@ -81,7 +83,7 @@ class FilmListActivity : AppCompatActivity(), FilmClickListener {
         val filmActivityIntent = Intent(this, FilmActivity::class.java)
         filmActivityIntent.putExtra(
             FILM_ID_EXTRA_KEY,
-            mViewModel!!.filmsLiveData!!.value!![position].id
+            mViewModel.filmsLiveData.value!![position].id
         )
         Log.d(TAG, "onItemClick: $position ")
         startActivity(filmActivityIntent)
