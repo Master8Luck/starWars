@@ -1,4 +1,4 @@
-package com.example.starwars.activity
+package com.example.starwars.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,28 +9,27 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.starwars.ConnectionUtils
-import com.example.starwars.adapter.FilmsAdapter
-import com.example.starwars.adapter.FilmsAdapter.FilmClickListener
 import com.example.starwars.databinding.ActivityFilmListBinding
-import com.example.starwars.model.Film
-import com.example.starwars.viewmodel.FilmListActivityViewModel
+import com.example.starwars.domain.model.Film
+import com.example.starwars.ui.adapter.FilmsAdapter
+import com.example.starwars.ui.adapter.FilmsAdapter.FilmClickListener
+import com.example.starwars.ui.viewmodel.FilmListActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class FilmListActivity : AppCompatActivity(), FilmClickListener {
 
     private lateinit var binding: ActivityFilmListBinding
-    @Inject lateinit var mAdapter: FilmsAdapter
-    val mViewModel: FilmListActivityViewModel by viewModels<FilmListActivityViewModel>()
+    lateinit var mAdapter: FilmsAdapter
+    val mViewModel: FilmListActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFilmListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mAdapter.filmClickListener = this
+        mAdapter = FilmsAdapter(this)
 
         with(mViewModel) {
             init()

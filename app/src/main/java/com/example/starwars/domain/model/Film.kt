@@ -1,10 +1,8 @@
-package com.example.starwars.model
+package com.example.starwars.domain.model
 
 import androidx.room.Entity
 import com.google.gson.annotations.SerializedName
 import androidx.room.PrimaryKey
-import com.example.starwars.model.Genre
-import com.example.starwars.model.Crew
 import io.reactivex.rxjava3.annotations.Nullable
 
 @Entity

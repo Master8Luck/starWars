@@ -1,12 +1,12 @@
-package com.example.starwars.repository
+package com.example.starwars.domain.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.starwars.activity.FilmListActivity.Companion.TAG
-import com.example.starwars.database.StarWarsDatabase
-import com.example.starwars.model.Film
-import com.example.starwars.retrofit.StarAPI
+import com.example.starwars.ui.activity.FilmListActivity.Companion.TAG
+import com.example.starwars.data.database.StarWarsDatabase
+import com.example.starwars.domain.model.Film
+import com.example.starwars.data.retrofit.StarAPI
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers

@@ -1,11 +1,11 @@
-package com.example.starwars.viewmodel
+package com.example.starwars.ui.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.starwars.activity.FilmListActivity.Companion.TAG
-import com.example.starwars.model.Film
-import com.example.starwars.repository.FilmsRepository
+import com.example.starwars.ui.activity.FilmListActivity.Companion.TAG
+import com.example.starwars.domain.model.Film
+import com.example.starwars.domain.repository.FilmsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

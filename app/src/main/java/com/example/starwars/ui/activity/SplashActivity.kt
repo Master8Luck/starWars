@@ -1,11 +1,10 @@
-package com.example.starwars.activity
+package com.example.starwars.ui.activity
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.example.starwars.R
 import android.content.Intent
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.appcompat.app.AppCompatActivity
 import com.example.starwars.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {

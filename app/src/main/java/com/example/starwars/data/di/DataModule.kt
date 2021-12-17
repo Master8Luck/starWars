@@ -1,10 +1,10 @@
-package com.example.starwars.di
+package com.example.starwars.data.di
 
 import androidx.room.Room
 import com.example.starwars.API_ENDPOINTS
 import com.example.starwars.StarWarsApp
-import com.example.starwars.database.StarWarsDatabase
-import com.example.starwars.retrofit.StarAPI
+import com.example.starwars.data.database.StarWarsDatabase
+import com.example.starwars.data.retrofit.StarAPI
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,7 +17,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object DataModule {
 
     @Provides
     @Singleton

@@ -1,4 +1,4 @@
-package com.example.starwars.adapter
+package com.example.starwars.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,12 +8,11 @@ import com.example.starwars.API_ENDPOINTS.IMAGE_CREW_BASE_URL
 import com.example.starwars.R
 import com.example.starwars.StarWarsApp
 import com.example.starwars.databinding.CrewListItemBinding
-import com.example.starwars.model.Crew
-import javax.inject.Inject
+import com.example.starwars.domain.model.Crew
 import javax.inject.Singleton
 
 @Singleton
-class CrewAdapter @Inject constructor(): RecyclerView.Adapter<CrewAdapter.ViewHolder>() {
+class CrewAdapter : RecyclerView.Adapter<CrewAdapter.ViewHolder>() {
 
     private var mCrews: List<Crew> = listOf()
 

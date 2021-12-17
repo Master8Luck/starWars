@@ -6,6 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    tools:context=".activity.CrewActivity">
+    tools:context=".ui.activity.CrewActivity">
 
 </androidx.recyclerview.widget.RecyclerView>

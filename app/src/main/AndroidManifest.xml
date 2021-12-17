@@ -15,7 +15,7 @@
         android:theme="@style/Theme.StarWars">
 
         <activity
-            android:name=".activity.SplashActivity"
+            android:name="com.example.starwars.ui.activity.SplashActivity"
             android:exported="true"
             android:noHistory="true"
             android:theme="@style/Theme.SplashTheme">
@@ -27,16 +27,16 @@
         </activity>
 
         <activity
-            android:name=".activity.CrewActivity"
+            android:name="com.example.starwars.ui.activity.CrewActivity"
             android:exported="false" />
 
         <activity
-            android:name=".activity.FilmActivity"
+            android:name="com.example.starwars.ui.activity.FilmActivity"
             android:exported="false" />
 
         <activity
-            android:name=".activity.FilmListActivity"
-            android:exported="true"></activity>
+            android:name="com.example.starwars.ui.activity.FilmListActivity"
+            android:exported="true" />
 
     </application>
 

@@ -1,10 +1,8 @@
-package com.example.starwars.model
+package com.example.starwars.domain.model
 
 import androidx.room.TypeConverter
-import com.example.starwars.model.Genre
 import com.google.gson.reflect.TypeToken
 import com.google.gson.Gson
-import com.example.starwars.model.Crew
 
 class DataConverter {
     @TypeConverter

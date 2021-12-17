@@ -6,4 +6,5 @@
     <string name="crew_item_divider">...</string>
     <string name="synopsis">Synopsis</string>
     <string name="cast_and_crew"><![CDATA[Cast & Crew]]></string>
+    <string name="star_wars">Star Wars</string>
 </resources>

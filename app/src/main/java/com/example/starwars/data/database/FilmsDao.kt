@@ -1,7 +1,7 @@
-package com.example.starwars.database
+package com.example.starwars.data.database
 
 import androidx.room.*
-import com.example.starwars.model.Film
+import com.example.starwars.domain.model.Film
 import io.reactivex.rxjava3.core.Single
 
 @Dao

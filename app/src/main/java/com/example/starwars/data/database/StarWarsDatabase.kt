@@ -1,10 +1,10 @@
-package com.example.starwars.database
+package com.example.starwars.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.starwars.model.DataConverter
-import com.example.starwars.model.Film
+import com.example.starwars.domain.model.DataConverter
+import com.example.starwars.domain.model.Film
 
 @Database(entities = [Film::class], version = 1)
 @TypeConverters(DataConverter::class)

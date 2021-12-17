@@ -1,7 +1,7 @@
-package com.example.starwars.retrofit
+package com.example.starwars.data.retrofit
 
-import com.example.starwars.model.Film
-import com.example.starwars.model.Films
+import com.example.starwars.domain.model.Film
+import com.example.starwars.domain.model.Films
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET

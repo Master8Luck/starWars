@@ -1,4 +1,4 @@
-package com.example.starwars.adapter
+package com.example.starwars.ui.adapter
 
 import android.os.Build
 import android.util.Log
@@ -10,14 +10,12 @@ import com.bumptech.glide.Glide
 import com.example.starwars.API_ENDPOINTS.IMAGE_BASE_URL
 import com.example.starwars.R
 import com.example.starwars.StarWarsApp.Companion.context
-import com.example.starwars.activity.FilmListActivity.Companion.TAG
 import com.example.starwars.databinding.FilmListItemBinding
-import com.example.starwars.model.Film
-import javax.inject.Inject
+import com.example.starwars.domain.model.Film
+import com.example.starwars.ui.activity.FilmListActivity.Companion.TAG
 
-class FilmsAdapter @Inject constructor() : RecyclerView.Adapter<FilmsAdapter.ViewHolder>() {
+class FilmsAdapter(var filmClickListener: FilmClickListener) : RecyclerView.Adapter<FilmsAdapter.ViewHolder>() {
     private var mFilms: ArrayList<Film> = ArrayList()
-    lateinit var filmClickListener: FilmClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = FilmListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
