@@ -12,7 +12,7 @@ import com.example.starwars.R
 import com.example.starwars.StarWarsApp.Companion.context
 import com.example.starwars.databinding.FilmListItemBinding
 import com.example.starwars.domain.model.Film
-import com.example.starwars.ui.activity.FilmListActivity.Companion.TAG
+import com.example.starwars.ui.activity.FilmListFragment.Companion.TAG
 
 class FilmsAdapter(var filmClickListener: FilmClickListener) : RecyclerView.Adapter<FilmsAdapter.ViewHolder>() {
     private var mFilms: ArrayList<Film> = ArrayList()

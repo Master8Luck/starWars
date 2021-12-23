@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.example.starwars.ui.activity.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_filmListFragment"
+            app:destination="@id/filmListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/filmListFragment"
+        android:name="com.example.starwars.ui.activity.FilmListFragment"
+        android:label="fragment_film_list"
+        tools:layout="@layout/fragment_film_list" >
+        <action
+            android:id="@+id/action_filmListFragment_to_filmFragment"
+            app:destination="@id/filmFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/filmFragment"
+        android:name="com.example.starwars.ui.activity.FilmFragment"
+        android:label="FilmFragment" >
+        <argument
+            android:name="id"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_filmFragment_to_crewFragment"
+            app:destination="@id/crewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/crewFragment"
+        android:name="com.example.starwars.ui.activity.CrewFragment"
+        android:label="fragment_crew"
+        tools:layout="@layout/fragment_crew" >
+        <argument
+            android:name="id"
+            app:argType="integer" />
+    </fragment>
+</navigation>

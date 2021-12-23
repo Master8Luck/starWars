@@ -3,9 +3,9 @@ package com.example.starwars.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.starwars.ui.activity.FilmListActivity.Companion.TAG
 import com.example.starwars.domain.model.Film
 import com.example.starwars.domain.repository.FilmsRepository
+import com.example.starwars.ui.activity.FilmListFragment.Companion.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

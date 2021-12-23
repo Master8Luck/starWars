@@ -3,7 +3,7 @@ package com.example.starwars.domain.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.starwars.ui.activity.FilmListActivity.Companion.TAG
+import com.example.starwars.ui.activity.FilmListFragment.Companion.TAG
 import com.example.starwars.data.database.StarWarsDatabase
 import com.example.starwars.domain.model.Film
 import com.example.starwars.data.retrofit.StarAPI

@@ -1,15 +1,20 @@
 package com.example.starwars.ui.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.example.starwars.ConnectionUtils
-import com.example.starwars.databinding.ActivityFilmListBinding
+import com.example.starwars.R
+import com.example.starwars.databinding.FragmentFilmListBinding
 import com.example.starwars.domain.model.Film
 import com.example.starwars.ui.adapter.FilmsAdapter
 import com.example.starwars.ui.adapter.FilmsAdapter.FilmClickListener
@@ -18,29 +23,35 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 @AndroidEntryPoint
-class FilmListActivity : AppCompatActivity(), FilmClickListener {
+class FilmListFragment : Fragment(), FilmClickListener {
 
-    private lateinit var binding: ActivityFilmListBinding
-    lateinit var mAdapter: FilmsAdapter
+    private lateinit var binding: FragmentFilmListBinding
+    private lateinit var mAdapter: FilmsAdapter
     val mViewModel: FilmListActivityViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityFilmListBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        requireContext().theme.applyStyle(R.style.Theme_StarWars, true)
+        (requireActivity() as AppCompatActivity).supportActionBar?.show()
+
+        binding = FragmentFilmListBinding.inflate(layoutInflater)
 
         mAdapter = FilmsAdapter(this)
 
         with(mViewModel) {
             init()
-            loadData(ConnectionUtils.isInternetConnected(this@FilmListActivity))
-            filmsLiveData.observe(this@FilmListActivity, { films ->
+            loadData(ConnectionUtils.isInternetConnected(this@FilmListFragment.requireContext()))
+            filmsLiveData.observe(viewLifecycleOwner, { films ->
                 Log.d(TAG, "onCreate: observer got the response")
                 if (films == null || films.isEmpty()) {
                     showErrorMessage()
                     currentPage = 0
                 } else {
-                    if (!ConnectionUtils.isInternetConnected(this@FilmListActivity)) {
+                    if (!ConnectionUtils.isInternetConnected(this@FilmListFragment.requireContext())) {
                         showCacheMessage()
                         currentPage = 0
                     }
@@ -50,7 +61,7 @@ class FilmListActivity : AppCompatActivity(), FilmClickListener {
                 }
             })
 
-            indicatorLiveData.observe(this@FilmListActivity, {
+            indicatorLiveData.observe(viewLifecycleOwner, {
                     isLoading -> binding.pbLoadingIndicator.isVisible = isLoading
             })
         }
@@ -62,31 +73,31 @@ class FilmListActivity : AppCompatActivity(), FilmClickListener {
                     super.onScrolled(recyclerView, dx, dy)
                     Log.d(TAG, "onScrolled: ")
                     if (!recyclerView.canScrollVertically(1)) {
-                        mViewModel.loadData(ConnectionUtils.isInternetConnected(this@FilmListActivity))
+                        mViewModel.loadData(ConnectionUtils.isInternetConnected(this@FilmListFragment.requireContext()))
                     }
                 }
             })
         }
 
+        return binding.root
     }
 
+
     private fun showErrorMessage() {
-        Toast.makeText(this, ERROR_MESSAGE, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this.requireContext(), ERROR_MESSAGE, Toast.LENGTH_SHORT).show()
     }
 
     private fun showCacheMessage() {
-        Toast.makeText(this, CACHE_MESSAGE, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this.requireContext(), CACHE_MESSAGE, Toast.LENGTH_SHORT).show()
     }
 
     override fun onItemClick(position: Int) {
-        val filmActivityIntent = Intent(this, FilmActivity::class.java)
-        filmActivityIntent.putExtra(
-            FILM_ID_EXTRA_KEY,
-            mViewModel.filmsLiveData.value!![position].id
-        )
-        Log.d(TAG, "onItemClick: $position ")
-        startActivity(filmActivityIntent)
+        Navigation.findNavController(this.requireView())
+            .navigate(FilmListFragmentDirections.actionFilmListFragmentToFilmFragment(
+                mViewModel.filmsLiveData.value!![position].id)
+            )
     }
+
 
     companion object {
         const val FILM_ID_EXTRA_KEY = "films"
