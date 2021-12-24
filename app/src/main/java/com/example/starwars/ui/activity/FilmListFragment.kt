@@ -6,14 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.example.starwars.ConnectionUtils
-import com.example.starwars.R
 import com.example.starwars.databinding.FragmentFilmListBinding
 import com.example.starwars.domain.model.Film
 import com.example.starwars.ui.adapter.FilmsAdapter
@@ -34,9 +32,6 @@ class FilmListFragment : Fragment(), FilmClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        requireContext().theme.applyStyle(R.style.Theme_StarWars, true)
-        (requireActivity() as AppCompatActivity).supportActionBar?.show()
 
         binding = FragmentFilmListBinding.inflate(layoutInflater)
 
